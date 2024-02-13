@@ -12,12 +12,16 @@ const camera = new THREE.PerspectiveCamera(
 )
 camera.position.z = 2
 
-const canvas = document.getElementById("c1") as HTMLCanvasElement;
-const renderer = new THREE.WebGLRenderer({canvas: canvas});
-renderer.setSize(200,200) // Change here for a specific width-height values exp:renderer.setSize(200,200)
-// document.body.appendChild(renderer.domElement)
+const canvas1 = document.getElementById("c1") as HTMLCanvasElement;
+const canvas2 = document.getElementById("c2") as HTMLCanvasElement;
 
-new OrbitControls(camera, renderer.domElement)
+const renderer1 = new THREE.WebGLRenderer({canvas: canvas1});
+renderer1.setSize(200,200) // Change here for a specific width-height values exp:renderer.setSize(200,200)
+// document.body.appendChild(renderer.domElement)
+const renderer2 = new THREE.WebGLRenderer({canvas: canvas2});
+renderer2.setSize(200,200);
+
+new OrbitControls(camera, renderer1.domElement)
 
 const geometry = new THREE.BoxGeometry()
 const material = new THREE.MeshBasicMaterial({
@@ -52,7 +56,8 @@ function animate() {
 }
 
 function render() {
-    renderer.render(scene, camera)
+    renderer1.render(scene, camera)
+    renderer2.render(scene, camera)
 }
 
 animate()
