@@ -6,14 +6,14 @@ scene.background = new THREE.Color(0xff8800);
 
 const camera = new THREE.PerspectiveCamera(
     75,
-    window.innerWidth / window.innerHeight,
+    window.innerWidth / window.innerHeight, // Change here for a specific width-height values exp:200/200
     0.1,
     1000
 )
 camera.position.z = 2
 
 const renderer = new THREE.WebGLRenderer()
-renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.setSize(window.innerWidth, window.innerHeight) // Change here for a specific width-height values exp:renderer.setSize(200,200)
 document.body.appendChild(renderer.domElement)
 
 new OrbitControls(camera, renderer.domElement)
@@ -30,6 +30,9 @@ scene.add(cube)
 console.dir(scene);
 console.log(scene);
 
+
+// This part makes the screen responsive!!!
+// Disable for static screen sizes
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight
