@@ -37,14 +37,14 @@ function onWindowResize() {
 
 // Basically Update function. Number of callbacks is usually 60 times per second.
 // But will generally match the display refresh rate in most web browsers.
-function animate() {
-    requestAnimationFrame(animate) // Calls itself every frame
+// function animate() {
+//     requestAnimationFrame(animate) // Calls itself every frame
 
-    // cube.rotation.x += 0.01
-    // cube.rotation.y += 0.01
+//     cube.rotation.x += 0.01
+//     cube.rotation.y += 0.01
 
-    // render()
-}
+//     render()
+// }
 
 function render() {
     renderer.render(scene, camera)
