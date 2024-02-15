@@ -15,7 +15,8 @@ const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-new OrbitControls(camera, renderer.domElement)
+const controls = new OrbitControls(camera, renderer.domElement)
+controls.addEventListener('change',render)
 
 const geometry = new THREE.BoxGeometry()
 const material = new THREE.MeshBasicMaterial({
@@ -34,17 +35,20 @@ function onWindowResize() {
     render()
 }
 
+// Basically Update function. Number of callbacks is usually 60 times per second.
+// But will generally match the display refresh rate in most web browsers.
 function animate() {
-    requestAnimationFrame(animate)
+    requestAnimationFrame(animate) // Calls itself every frame
 
-    cube.rotation.x += 0.01
-    cube.rotation.y += 0.01
+    // cube.rotation.x += 0.01
+    // cube.rotation.y += 0.01
 
-    render()
+    // render()
 }
 
 function render() {
     renderer.render(scene, camera)
 }
 
-animate()
+// animate()
+render()
