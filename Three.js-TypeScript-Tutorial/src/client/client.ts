@@ -13,10 +13,28 @@ const camera1 = new THREE.PerspectiveCamera(
 )
 
 const camera2 = new THREE.OrthographicCamera(
-    -2,2,2,-2
+    -2,2,2,-2 , // Camera size in Unity
+    .1, // Near plane clip
+    10, // Far plane clip
+)
+
+const camera3 = new THREE.OrthographicCamera(
+    -2,2,2,-2 , // Camera size in Unity
+    .1, // Near plane clip
+    10, // Far plane clip
+)
+
+const camera4 = new THREE.OrthographicCamera(
+    -2,2,2,-2 , // Camera size in Unity
+    .1, // Near plane clip
+    10, // Far plane clip
 )
 camera1.position.z = 2
-camera2.position.z = 2
+camera2.position.y = 2
+camera2.lookAt(new THREE.Vector3())
+camera3.position.x = -2
+camera3.lookAt(new THREE.Vector3())
+camera4.position.z = 2
 
 const canvas1 = document.getElementById("c1") as HTMLCanvasElement;
 const canvas2 = document.getElementById("c2") as HTMLCanvasElement;
@@ -70,8 +88,8 @@ function animate() {
 function render() {
     renderer1.render(scene, camera1)
     renderer2.render(scene, camera2)
-    renderer3.render(scene, camera1)
-    renderer4.render(scene, camera1)
+    renderer3.render(scene, camera3)
+    renderer4.render(scene, camera4)
 }
 
 animate()
