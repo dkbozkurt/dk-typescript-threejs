@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Stats from 'three/examples/jsm/libs/stats.module'
+import {GUI} from 'dat.gui'
+
 const scene = new THREE.Scene()
 
 const camera = new THREE.PerspectiveCamera(
@@ -37,6 +39,18 @@ function onWindowResize() {
 
 const stats = new Stats()
 document.body.appendChild(stats.dom)
+
+const gui = new GUI()
+const cubeFolder = gui.addFolder("Cube")
+
+cubeFolder.add(cube.rotation,"x",0,Math.PI *2)
+cubeFolder.add(cube.rotation,"y",0,Math.PI *2)
+cubeFolder.add(cube.rotation,"z",0,Math.PI *2)
+cubeFolder.open()
+
+const cameraFolder = gui.addFolder("Camera")
+cameraFolder.add(camera.position,"z",0,20)
+cameraFolder.open()
 
 // Basically Update function. Number of callbacks is usually 60 times per second.
 // But will generally match the display refresh rate in most web browsers.
