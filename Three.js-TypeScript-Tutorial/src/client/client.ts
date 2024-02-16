@@ -26,11 +26,15 @@ const icosahedronGeometry = new THREE.IcosahedronGeometry(1, 0)
 const planeGeometry = new THREE.PlaneGeometry()
 const torusKnotGeometry = new THREE.TorusKnotGeometry()
 
-const material = new THREE.MeshBasicMaterial({
-    color: 0x00ff00,
-    wireframe: true,
+ const material = new THREE.MeshBasicMaterial({
+    // color: 0x00ff00,
+    // wireframe: true,
 })
 //const material= new THREE.MeshNormalMaterial()
+
+// How to set material properties
+// material.transparent = true
+// material.opacity = 0.2
 
 const cube = new THREE.Mesh(boxGeometry, material)
 cube.position.x = 5
@@ -63,29 +67,32 @@ function onWindowResize() {
 const stats = new Stats()
 document.body.appendChild(stats.dom)
 
-// const options = {
-//     side: {
-//         "FrontSide": THREE.FrontSide,
-//         "BackSide": THREE.BackSide,
-//         "DoubleSide": THREE.DoubleSide,
-//     }
-// }
+const options = {
+    side: {
+        "FrontSide": THREE.FrontSide,
+        "BackSide": THREE.BackSide,
+        "DoubleSide": THREE.DoubleSide,
+    }
+}
 
 const gui = new GUI()
 const materialFolder = gui.addFolder('THREE.Material')
-// materialFolder.add(material, 'transparent').onChange(() => material.needsUpdate = true)
-// materialFolder.add(material, 'opacity', 0, 1, 0.01)
-// materialFolder.add(material, 'depthTest')
-// materialFolder.add(material, 'depthWrite')
-// materialFolder.add(material, 'alphaTest', 0, 1, 0.01).onChange(() => updateMaterial())
-// materialFolder.add(material, 'visible')
-// materialFolder.add(material, 'side', options.side).onChange(() => updateMaterial())
+materialFolder.add(material, 'transparent').onChange(() => material.needsUpdate = true)
+materialFolder.add(material, 'opacity', 0, 1, 0.01)
+materialFolder.add(material, 'depthTest')
+materialFolder.add(material, 'depthWrite')
+materialFolder.add(material, 'alphaTest', 0, 1, 0.01).onChange(() => updateMaterial())
+materialFolder.add(material, 'visible')
+materialFolder.add(material, 'side', options.side).onChange(() => updateMaterial())
 materialFolder.open()
 
-// function updateMaterial() {
-//     material.side = Number(material.side) as THREE.Side
-//     material.needsUpdate = true
-// }
+// How to set side directly
+material.side = THREE.BackSide;
+
+function updateMaterial() {
+    material.side = Number(material.side) as THREE.Side // Casting as Number is very important while using enums.
+    material.needsUpdate = true
+}
 
 function animate() {
     requestAnimationFrame(animate)
