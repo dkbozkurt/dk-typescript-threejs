@@ -26,15 +26,14 @@ const icosahedronGeometry = new THREE.IcosahedronGeometry(1, 0)
 const planeGeometry = new THREE.PlaneGeometry()
 const torusKnotGeometry = new THREE.TorusKnotGeometry()
 
- const material = new THREE.MeshBasicMaterial({
-    // color: 0x00ff00,
-    // wireframe: true,
-})
-//const material= new THREE.MeshNormalMaterial()
+const material = new THREE.MeshBasicMaterial() //{ color: 0x00ff00, wireframe: true })
 
-// How to set material properties
-// material.transparent = true
-// material.opacity = 0.2
+// const texture = new THREE.TextureLoader().load("img/grid.png")
+// material.map = texture
+// const envTexture = new THREE.CubeTextureLoader().load(["img/px_50.png", "img/nx_50.png", "img/py_50.png", "img/ny_50.png", "img/pz_50.png", "img/nz_50.png"])
+// envTexture.mapping = THREE.CubeReflectionMapping
+// envTexture.mapping = THREE.CubeRefractionMapping
+// material.envMap = envTexture
 
 const cube = new THREE.Mesh(boxGeometry, material)
 cube.position.x = 5
@@ -69,10 +68,15 @@ document.body.appendChild(stats.dom)
 
 const options = {
     side: {
-        "FrontSide": THREE.FrontSide,
-        "BackSide": THREE.BackSide,
-        "DoubleSide": THREE.DoubleSide,
-    }
+        FrontSide: THREE.FrontSide,
+        BackSide: THREE.BackSide,
+        DoubleSide: THREE.DoubleSide,
+    },
+    combine: {
+        MultiplyOperation: THREE.MultiplyOperation,
+        MixOperation: THREE.MixOperation,
+        AddOperation: THREE.AddOperation,
+    },
 }
 
 const gui = new GUI()
@@ -81,16 +85,31 @@ materialFolder.add(material, 'transparent').onChange(() => material.needsUpdate 
 materialFolder.add(material, 'opacity', 0, 1, 0.01)
 materialFolder.add(material, 'depthTest')
 materialFolder.add(material, 'depthWrite')
-materialFolder.add(material, 'alphaTest', 0, 1, 0.01).onChange(() => updateMaterial())
+materialFolder
+    .add(material, 'alphaTest', 0, 1, 0.01)
+    .onChange(() => updateMaterial())
 materialFolder.add(material, 'visible')
-materialFolder.add(material, 'side', options.side).onChange(() => updateMaterial())
+materialFolder
+    .add(material, 'side', options.side)
+    .onChange(() => updateMaterial())
 materialFolder.open()
 
-// How to set side directly
-material.side = THREE.BackSide;
+// const data = {
+//     color: material.color.getHex(),
+// }
+
+const meshBasicMaterialFolder = gui.addFolder('THREE.MeshBasicMaterial')
+//meshBasicMaterialFolder.addColor(data, 'color').onChange(() => { material.color.setHex(Number(data.color.toString().replace('#', '0x'))) })
+//meshBasicMaterialFolder.add(material, 'wireframe')
+//meshBasicMaterialFolder.add(material, 'wireframeLinewidth', 0, 10)
+//meshBasicMaterialFolder.add(material, 'combine', options.combine).onChange(() => updateMaterial())
+//meshBasicMaterialFolder.add(material, 'reflectivity', 0, 1)
+//meshBasicMaterialFolder.add(material, 'refractionRatio', 0, 1)
+meshBasicMaterialFolder.open()
 
 function updateMaterial() {
-    material.side = Number(material.side) as THREE.Side // Casting as Number is very important while using enums.
+    material.side = Number(material.side) as THREE.Side
+    material.combine = Number(material.combine) as THREE.Combine
     material.needsUpdate = true
 }
 
