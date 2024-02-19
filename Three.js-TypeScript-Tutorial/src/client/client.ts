@@ -10,6 +10,10 @@ const light = new THREE.PointLight(0xffffff, 1000)
 light.position.set(10, 10, 10)
 scene.add(light)
 
+const light2 = new THREE.PointLight(0xffffff, 1000)
+light2.position.set(-10, -10, -10)
+scene.add(light2)
+
 const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -101,7 +105,7 @@ materialFolder.open()
 const data = {
     color: material.color.getHex(),
     emissive: material.emissive.getHex(),
-    //specular: material.specular.getHex()
+    specular: material.specular.getHex()
 }
 
 const meshPhongMaterialFolder = gui.addFolder('THREE.MeshPhongMaterial')
@@ -113,8 +117,8 @@ meshPhongMaterialFolder.addColor(data, 'emissive').onChange(() => {
         Number(data.emissive.toString().replace('#', '0x'))
     )
 })
-//meshPhongMaterialFolder.addColor(data, 'specular').onChange(() => { material.specular.setHex(Number(data.specular.toString().replace('#', '0x'))) });
-//meshPhongMaterialFolder.add(material, 'shininess', 0, 1024);
+meshPhongMaterialFolder.addColor(data, 'specular').onChange(() => { material.specular.setHex(Number(data.specular.toString().replace('#', '0x'))) });
+meshPhongMaterialFolder.add(material, 'shininess', 0, 1024);
 meshPhongMaterialFolder.add(material, 'wireframe')
 meshPhongMaterialFolder.add(material, 'wireframeLinewidth', 0, 10)
 meshPhongMaterialFolder
