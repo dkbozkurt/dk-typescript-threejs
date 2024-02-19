@@ -26,15 +26,7 @@ const icosahedronGeometry = new THREE.IcosahedronGeometry(1, 0)
 const planeGeometry = new THREE.PlaneGeometry()
 const torusKnotGeometry = new THREE.TorusKnotGeometry()
 
-const material = new THREE.MeshBasicMaterial() //{ color: 0x00ff00, wireframe: true })
-
-const texture = new THREE.TextureLoader().load("img/grid.png")
-material.map = texture
-const envTexture = new THREE.CubeTextureLoader().load(["img/px_50.png", "img/nx_50.png", "img/py_50.png", "img/ny_50.png", "img/pz_50.png", "img/nz_50.png"])
-envTexture.mapping = THREE.CubeReflectionMapping
-// envTexture.mapping = THREE.CubeRefractionMapping
-material.envMap = envTexture
-// material.needsUpdate = true
+const material = new THREE.MeshNormalMaterial()
 
 const cube = new THREE.Mesh(boxGeometry, material)
 cube.position.x = 5
@@ -73,11 +65,6 @@ const options = {
         BackSide: THREE.BackSide,
         DoubleSide: THREE.DoubleSide,
     },
-    combine: {
-        MultiplyOperation: THREE.MultiplyOperation,
-        MixOperation: THREE.MixOperation,
-        AddOperation: THREE.AddOperation,
-    },
 }
 
 const gui = new GUI()
@@ -95,23 +82,16 @@ materialFolder
     .onChange(() => updateMaterial())
 materialFolder.open()
 
-const data = {
-    color: material.color.getHex(),
-}
+const meshNormalMaterialFolder = gui.addFolder('THREE.MeshNormalMaterial')
 
-const meshBasicMaterialFolder = gui.addFolder('THREE.MeshBasicMaterial')
-// ThreeJs accepts colors as 0x00ff00 so we are converting HTML color values to Three.js colors
-meshBasicMaterialFolder.addColor(data, 'color').onChange(() => { material.color.setHex(Number(data.color.toString().replace('#', '0x'))) })
-meshBasicMaterialFolder.add(material, 'wireframe')
-// meshBasicMaterialFolder.add(material, 'wireframeLinewidth', 0, 10)
-meshBasicMaterialFolder.add(material, 'combine', options.combine).onChange(() => updateMaterial())
-meshBasicMaterialFolder.add(material, 'reflectivity', 0, 1)
-meshBasicMaterialFolder.add(material, 'refractionRatio', 0, 1)
-meshBasicMaterialFolder.open()
+meshNormalMaterialFolder.add(material, 'wireframe')
+meshNormalMaterialFolder
+    .add(material, 'flatShading')
+    .onChange(() => updateMaterial())
+meshNormalMaterialFolder.open()
 
 function updateMaterial() {
     material.side = Number(material.side) as THREE.Side
-    material.combine = Number(material.combine) as THREE.Combine
     material.needsUpdate = true
 }
 
