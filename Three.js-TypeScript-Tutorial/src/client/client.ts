@@ -103,7 +103,7 @@ materialFolder.open()
 
 const data = {
     color: material.color.getHex(),
-    //emissive: material.emissive.getHex(),
+    emissive: material.emissive.getHex(),
 }
 
 const meshLambertMaterialFolder = gui.addFolder('THREE.MeshLambertMaterial')
@@ -111,7 +111,7 @@ const meshLambertMaterialFolder = gui.addFolder('THREE.MeshLambertMaterial')
 meshLambertMaterialFolder.addColor(data, 'color').onChange(() => {
     material.color.setHex(Number(data.color.toString().replace('#', '0x')))
 })
-//meshLambertMaterialFolder.addColor(data, 'emissive').onChange(() => { material.emissive.setHex(Number(data.emissive.toString().replace('#', '0x'))) })
+meshLambertMaterialFolder.addColor(data, 'emissive').onChange(() => { material.emissive.setHex(Number(data.emissive.toString().replace('#', '0x'))) })
 meshLambertMaterialFolder.add(material, 'wireframe')
 meshLambertMaterialFolder.add(material, 'wireframeLinewidth', 0, 10)
 //meshLambertMaterialFolder.add(material, 'flatShading').onChange(() => updateMaterial())
