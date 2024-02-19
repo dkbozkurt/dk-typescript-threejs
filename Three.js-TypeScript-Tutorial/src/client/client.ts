@@ -32,15 +32,15 @@ const torusKnotGeometry = new THREE.TorusKnotGeometry()
 
 const material = new THREE.MeshStandardMaterial()
 
-// const texture = new THREE.TextureLoader().load('img/grid.png')
-// material.map = texture
-// const pmremGenerator = new THREE.PMREMGenerator(renderer)
-// const envTexture = new THREE.CubeTextureLoader().load(['img/px_50.png','img/nx_50.png','img/py_50.png','img/ny_50.png','img/pz_50.png','img/nz_50.png'],
-//     () => {
-//         material.envMap = pmremGenerator.fromCubemap(envTexture).texture
-//         pmremGenerator.dispose()
-//     }
-// )
+const texture = new THREE.TextureLoader().load('img/grid.png')
+material.map = texture
+const pmremGenerator = new THREE.PMREMGenerator(renderer)
+const envTexture = new THREE.CubeTextureLoader().load(['img/px_50.png','img/nx_50.png','img/py_50.png','img/ny_50.png','img/pz_50.png','img/nz_50.png'],
+    () => {
+        material.envMap = pmremGenerator.fromCubemap(envTexture).texture
+        pmremGenerator.dispose()
+    }
+)
 
 const cube = new THREE.Mesh(boxGeometry, material)
 cube.position.x = 5
@@ -115,8 +115,8 @@ meshStandardMaterialFolder.add(material, 'wireframe')
 meshStandardMaterialFolder
     .add(material, 'flatShading')
     .onChange(() => updateMaterial())
-//meshStandardMaterialFolder.add(material, 'roughness', 0, 1)
-//meshStandardMaterialFolder.add(material, 'metalness', 0, 1)
+meshStandardMaterialFolder.add(material, 'roughness', 0, 1)
+meshStandardMaterialFolder.add(material, 'metalness', 0, 1)
 meshStandardMaterialFolder.open()
 
 function updateMaterial() {
