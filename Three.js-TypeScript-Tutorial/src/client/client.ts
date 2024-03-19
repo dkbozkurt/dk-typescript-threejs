@@ -30,13 +30,13 @@ const planeGeometry = new THREE.PlaneGeometry() //3.6, 1.8)
 
 const material = new THREE.MeshPhongMaterial()
 
-const texture = new THREE.TextureLoader().load('img/grid.png')
+//const texture = new THREE.TextureLoader().load('img/grid.png')
 //const texture = new THREE.TextureLoader().load("img/worldColour.5400x2700.jpg")
-material.map = texture
-// const envTexture = new THREE.CubeTextureLoader().load(["img/px_50.png", "img/nx_50.png", "img/py_50.png", "img/ny_50.png", "img/pz_50.png", "img/nz_50.png"])
+// material.map = texture
+const envTexture = new THREE.CubeTextureLoader().load(["img/px_50.png", "img/nx_50.png", "img/py_50.png", "img/ny_50.png", "img/pz_50.png", "img/nz_50.png"])
 //const envTexture = new THREE.CubeTextureLoader().load(["img/px_eso0932a.jpg", "img/nx_eso0932a.jpg", "img/py_eso0932a.jpg", "img/ny_eso0932a.jpg", "img/pz_eso0932a.jpg", "img/nz_eso0932a.jpg"])
-// envTexture.mapping = THREE.CubeReflectionMapping
-// material.envMap = envTexture
+envTexture.mapping = THREE.CubeReflectionMapping
+material.envMap = envTexture
 
 const specularTexture = new THREE.TextureLoader().load("img/grayscale-test.png")
 //const specularTexture = new THREE.TextureLoader().load("img/earthSpecular.jpg")
