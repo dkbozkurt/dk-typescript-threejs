@@ -23,23 +23,23 @@ renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
-//controls.screenSpacePanning = true // default is now true since three r118. Used so that panning up and down doesn't zoom in/out
+controls.screenSpacePanning = true // default is now true since three r118. Used so that panning up and down doesn't zoom in/out
 //controls.addEventListener('change', render)
 
-const planeGeometry = new THREE.PlaneGeometry() //3.6, 1.8)
+const planeGeometry = new THREE.PlaneGeometry(3.6, 1.8)
 
 const material = new THREE.MeshPhongMaterial()
 
 //const texture = new THREE.TextureLoader().load('img/grid.png')
-//const texture = new THREE.TextureLoader().load("img/worldColour.5400x2700.jpg")
+const texture = new THREE.TextureLoader().load("img/worldColour.5400x2700.jpg")
 // material.map = texture
-const envTexture = new THREE.CubeTextureLoader().load(["img/px_50.png", "img/nx_50.png", "img/py_50.png", "img/ny_50.png", "img/pz_50.png", "img/nz_50.png"])
-//const envTexture = new THREE.CubeTextureLoader().load(["img/px_eso0932a.jpg", "img/nx_eso0932a.jpg", "img/py_eso0932a.jpg", "img/ny_eso0932a.jpg", "img/pz_eso0932a.jpg", "img/nz_eso0932a.jpg"])
+//const envTexture = new THREE.CubeTextureLoader().load(["img/px_50.png", "img/nx_50.png", "img/py_50.png", "img/ny_50.png", "img/pz_50.png", "img/nz_50.png"])
+const envTexture = new THREE.CubeTextureLoader().load(["img/px_eso0932a.jpg", "img/nx_eso0932a.jpg", "img/py_eso0932a.jpg", "img/ny_eso0932a.jpg", "img/pz_eso0932a.jpg", "img/nz_eso0932a.jpg"])
 envTexture.mapping = THREE.CubeReflectionMapping
 material.envMap = envTexture
 
-const specularTexture = new THREE.TextureLoader().load("img/grayscale-test.png")
-//const specularTexture = new THREE.TextureLoader().load("img/earthSpecular.jpg")
+// const specularTexture = new THREE.TextureLoader().load("img/grayscale-test.png")
+const specularTexture = new THREE.TextureLoader().load("img/earthSpecular.jpg")
 material.specularMap = specularTexture
 
 const plane = new THREE.Mesh(planeGeometry, material)
