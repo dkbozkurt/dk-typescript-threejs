@@ -23,26 +23,34 @@ renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
-controls.screenSpacePanning = true // default is now true since three r118. Used so that panning up and down doesn't zoom in/out
+controls.screenSpacePanning = true //so that panning up and down doesn't zoom in/out
 //controls.addEventListener('change', render)
 
 const planeGeometry = new THREE.PlaneGeometry(3.6, 1.8)
 
-const material = new THREE.MeshPhongMaterial()
+const material = new THREE.MeshPhysicalMaterial({})
 
-//const texture = new THREE.TextureLoader().load('img/grid.png')
-const texture = new THREE.TextureLoader().load("img/worldColour.5400x2700.jpg")
-// material.map = texture
-//const envTexture = new THREE.CubeTextureLoader().load(["img/px_50.png", "img/nx_50.png", "img/py_50.png", "img/ny_50.png", "img/pz_50.png", "img/nz_50.png"])
-const envTexture = new THREE.CubeTextureLoader().load(["img/px_eso0932a.jpg", "img/nx_eso0932a.jpg", "img/py_eso0932a.jpg", "img/ny_eso0932a.jpg", "img/pz_eso0932a.jpg", "img/nz_eso0932a.jpg"])
+//const texture = new THREE.TextureLoader().load("img/grid.png")
+const texture = new THREE.TextureLoader().load('img/worldColour.5400x2700.jpg')
+material.map = texture
+// const envTexture = new THREE.CubeTextureLoader().load(["img/px_50.png", "img/nx_50.png", "img/py_50.png", "img/ny_50.png", "img/pz_50.png", "img/nz_50.png"])
+const envTexture = new THREE.CubeTextureLoader().load([
+    'img/px_eso0932a.jpg',
+    'img/nx_eso0932a.jpg',
+    'img/py_eso0932a.jpg',
+    'img/ny_eso0932a.jpg',
+    'img/pz_eso0932a.jpg',
+    'img/nz_eso0932a.jpg',
+])
 envTexture.mapping = THREE.CubeReflectionMapping
 material.envMap = envTexture
 
-// const specularTexture = new THREE.TextureLoader().load("img/grayscale-test.png")
-const specularTexture = new THREE.TextureLoader().load("img/earthSpecular.jpg")
-material.specularMap = specularTexture
+//const specularTexture = new THREE.TextureLoader().load("img/grayscale-test.png")
+const specularTexture = new THREE.TextureLoader().load('img/earthSpecular.jpg')
+material.roughnessMap = specularTexture
+material.metalnessMap = specularTexture
 
-const plane = new THREE.Mesh(planeGeometry, material)
+const plane: THREE.Mesh = new THREE.Mesh(planeGeometry, material)
 scene.add(plane)
 
 window.addEventListener('resize', onWindowResize, false)
@@ -61,11 +69,6 @@ const options = {
         FrontSide: THREE.FrontSide,
         BackSide: THREE.BackSide,
         DoubleSide: THREE.DoubleSide,
-    },
-    combine: {
-        MultiplyOperation: THREE.MultiplyOperation,
-        MixOperation: THREE.MixOperation,
-        AddOperation: THREE.AddOperation,
     },
 }
 const gui = new GUI()
@@ -87,38 +90,34 @@ materialFolder
 const data = {
     color: material.color.getHex(),
     emissive: material.emissive.getHex(),
-    specular: material.specular.getHex(),
 }
 
-const meshPhongMaterialFolder = gui.addFolder('THREE.MeshPhongMaterial')
+const meshPhysicalMaterialFolder = gui.addFolder(
+    'THREE.meshPhysicalMaterialFolder'
+)
 
-meshPhongMaterialFolder.addColor(data, 'color').onChange(() => {
+meshPhysicalMaterialFolder.addColor(data, 'color').onChange(() => {
     material.color.setHex(Number(data.color.toString().replace('#', '0x')))
 })
-meshPhongMaterialFolder.addColor(data, 'emissive').onChange(() => {
+meshPhysicalMaterialFolder.addColor(data, 'emissive').onChange(() => {
     material.emissive.setHex(
         Number(data.emissive.toString().replace('#', '0x'))
     )
 })
-meshPhongMaterialFolder.addColor(data, 'specular').onChange(() => {
-    material.specular.setHex(
-        Number(data.specular.toString().replace('#', '0x'))
-    )
-})
-meshPhongMaterialFolder.add(material, 'shininess', 0, 1024)
-meshPhongMaterialFolder.add(material, 'wireframe')
-meshPhongMaterialFolder
+meshPhysicalMaterialFolder.add(material, 'wireframe')
+meshPhysicalMaterialFolder
     .add(material, 'flatShading')
     .onChange(() => updateMaterial())
-meshPhongMaterialFolder
-    .add(material, 'combine', options.combine)
-    .onChange(() => updateMaterial())
-meshPhongMaterialFolder.add(material, 'reflectivity', 0, 1)
-meshPhongMaterialFolder.open()
+meshPhysicalMaterialFolder.add(material, 'reflectivity', 0, 1)
+meshPhysicalMaterialFolder.add(material, 'envMapIntensity', 0, 1)
+meshPhysicalMaterialFolder.add(material, 'roughness', 0, 1)
+meshPhysicalMaterialFolder.add(material, 'metalness', 0, 1)
+meshPhysicalMaterialFolder.add(material, 'clearcoat', 0, 1, 0.01)
+meshPhysicalMaterialFolder.add(material, 'clearcoatRoughness', 0, 1, 0.01)
+meshPhysicalMaterialFolder.open()
 
 function updateMaterial() {
     material.side = Number(material.side) as THREE.Side
-    material.combine = Number(material.combine) as THREE.Combine
     material.needsUpdate = true
 }
 
