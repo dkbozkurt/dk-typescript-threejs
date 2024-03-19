@@ -42,6 +42,9 @@ const fiveTone = new THREE.TextureLoader().load('img/fiveTone.jpg')
 fiveTone.minFilter = THREE.NearestFilter
 fiveTone.magFilter = THREE.NearestFilter
 
+// For custom textures if we want to make it smooth, we basically need to remove min and max filers.
+const smoothThreeTone = new THREE.TextureLoader().load('img/ThreeTone.jpg')
+
 const material: THREE.MeshToonMaterial = new THREE.MeshToonMaterial()
 
 const cube = new THREE.Mesh(boxGeometry, material)
@@ -86,6 +89,7 @@ const options = {
         threeTone: 'threeTone',
         fourTone: 'fourTone',
         fiveTone: 'fiveTone',
+        smoothThreeTone:'smoothThreeTone',
     },
 }
 
