@@ -6,8 +6,8 @@ import { GUI } from 'dat.gui'
 const scene = new THREE.Scene()
 scene.add(new THREE.AxesHelper(5))
 
-const light = new THREE.PointLight(0xffffff, 1000)
-light.position.set(0, 5, 10)
+const light = new THREE.PointLight(0xffffff, 200)
+light.position.set(0, 2, 5)
 scene.add(light)
 
 const camera = new THREE.PerspectiveCamera(
@@ -32,9 +32,11 @@ const material = new THREE.MeshPhongMaterial()
 const texture = new THREE.TextureLoader().load('img/worldColour.5400x2700.jpg')
 material.map = texture
 
-const bumpTexture = new THREE.TextureLoader().load('img/earth_bumpmap.jpg')
-material.bumpMap = bumpTexture
-material.bumpScale = 0.015
+const normalTexture = new THREE.TextureLoader().load(
+    'img/earth_normalmap_8192x4096.jpg'
+)
+material.normalMap = normalTexture
+material.normalScale.set(2, 2)
 
 const plane = new THREE.Mesh(planeGeometry, material)
 scene.add(plane)
@@ -51,7 +53,9 @@ const stats = new Stats()
 document.body.appendChild(stats.dom)
 
 const gui = new GUI()
-gui.add(material, 'bumpScale', 0, 100, 0.01)
+gui.add(material.normalScale, 'x', 0, 10, 0.01)
+gui.add(material.normalScale, 'y', 0, 10, 0.01)
+gui.add(light.position, 'x', -20, 20).name('Light Pos X')
 
 function animate() {
     requestAnimationFrame(animate)
