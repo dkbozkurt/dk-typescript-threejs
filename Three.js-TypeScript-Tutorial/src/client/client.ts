@@ -26,7 +26,7 @@ const controls = new OrbitControls(camera, renderer.domElement)
 controls.screenSpacePanning = true //so that panning up and down doesn't zoom in/out
 //controls.addEventListener('change', render)
 
-const planeGeometry = new THREE.PlaneGeometry(3.6, 1.8) //, 360, 180)
+const planeGeometry = new THREE.PlaneGeometry(3.6, 1.8, 360, 180)
 
 const material = new THREE.MeshPhongMaterial()
 
@@ -125,8 +125,8 @@ function updateMaterial() {
 const planeData = {
     width: 3.6,
     height: 1.8,
-    widthSegments: 1,
-    heightSegments: 1
+    widthSegments: 360,
+    heightSegments: 180
 };
 const planePropertiesFolder = gui.addFolder("PlaneGeometry")
 //planePropertiesFolder.add(planeData, 'width', 1, 30).onChange(regeneratePlaneGeometry)
