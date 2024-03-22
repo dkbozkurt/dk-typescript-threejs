@@ -6,10 +6,10 @@ import { GUI } from 'dat.gui'
 const scene = new THREE.Scene()
 scene.add(new THREE.AxesHelper(5))
 
-const light = new THREE.DirectionalLight(0xffffff, Math.PI)
+const light = new THREE.HemisphereLight(0xffffff, 0xffffff, Math.PI)
 scene.add(light)
 
-const helper = new THREE.DirectionalLightHelper(light)
+const helper = new THREE.HemisphereLightHelper(light, 5)
 scene.add(helper)
 
 const camera = new THREE.PerspectiveCamera(
@@ -26,7 +26,7 @@ document.body.appendChild(renderer.domElement)
 
 new OrbitControls(camera, renderer.domElement)
 
-// const planeGeometry = new THREE.PlaneGeometry(20, 10)//, 360, 180)
+// const planeGeometry = new THREE.PlaneGeometry(100, 10)
 // const plane = new THREE.Mesh(planeGeometry, new THREE.MeshPhongMaterial())
 // plane.rotateX(-Math.PI / 2)
 // //plane.position.y = -1.75
@@ -69,11 +69,6 @@ torus[2].position.x = 0
 torus[3].position.x = 4
 torus[4].position.x = 8
 
-light.target = torus[0]
-// To set it to a custom point
-// light.target.position.set(0, 10, 0)
-// scene.add(light.target)
-
 scene.add(torus[0])
 scene.add(torus[1])
 scene.add(torus[2])
@@ -93,6 +88,7 @@ document.body.appendChild(stats.dom)
 
 const data = {
     color: light.color.getHex(),
+    groundColor: light.groundColor.getHex(),
     mapsEnabled: true,
 }
 
@@ -102,12 +98,19 @@ lightFolder.addColor(data, 'color').onChange(() => {
     light.color.setHex(Number(data.color.toString().replace('#', '0x')))
 })
 lightFolder.add(light, 'intensity', 0, Math.PI * 2, 0.01)
+lightFolder.open()
 
-const directionalLightFolder = gui.addFolder('THREE.DirectionalLight')
-directionalLightFolder.add(light.position, 'x', -100, 100, 0.01)
-directionalLightFolder.add(light.position, 'y', -100, 100, 0.01)
-directionalLightFolder.add(light.position, 'z', -100, 100, 0.01)
-directionalLightFolder.open()
+const hemisphereLightFolder = gui.addFolder('THREE.HemisphereLight')
+hemisphereLightFolder.addColor(data, 'groundColor').onChange(() => {
+    light.groundColor.setHex(
+        Number(data.groundColor.toString().replace('#', '0x'))
+    )
+})
+
+hemisphereLightFolder.add(light.position, 'x', -100, 100, 0.01)
+hemisphereLightFolder.add(light.position, 'y', -100, 100, 0.01)
+hemisphereLightFolder.add(light.position, 'z', -100, 100, 0.01)
+hemisphereLightFolder.open()
 
 const meshesFolder = gui.addFolder('Meshes')
 meshesFolder.add(data, 'mapsEnabled').onChange(() => {
@@ -124,7 +127,7 @@ meshesFolder.add(data, 'mapsEnabled').onChange(() => {
 function animate() {
     requestAnimationFrame(animate)
 
-    helper.update()
+    //helper.update()
 
     torus.forEach((t) => {
         t.rotation.y += 0.01
