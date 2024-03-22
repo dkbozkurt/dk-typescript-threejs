@@ -90,11 +90,11 @@ torus[2].castShadow = true
 torus[3].castShadow = true
 torus[4].castShadow = true
 
-// torus[0].receiveShadow = true
-// torus[1].receiveShadow = true
-// torus[2].receiveShadow = true
-// torus[3].receiveShadow = true
-// torus[4].receiveShadow = true
+torus[0].receiveShadow = true
+torus[1].receiveShadow = true
+torus[2].receiveShadow = true
+torus[3].receiveShadow = true
+torus[4].receiveShadow = true
 
 scene.add(torus[0])
 scene.add(torus[1])
@@ -132,8 +132,8 @@ spotLightFolder.add(light, 'distance', 0, 100, 0.01)
 spotLightFolder.add(light, 'decay', 0, 4, 0.1)
 spotLightFolder.add(light, 'angle', 0, 1, 0.1)
 spotLightFolder.add(light, 'penumbra', 0, 1, 0.1)
-//spotLightFolder.add(light.shadow.camera, "near", 0.1, 100).onChange(() => light.shadow.camera.updateProjectionMatrix())
-//spotLightFolder.add(light.shadow.camera, "far", 0.1, 100).onChange(() => light.shadow.camera.updateProjectionMatrix())
+spotLightFolder.add(light.shadow.camera, "near", 0.1, 100).onChange(() => light.shadow.camera.updateProjectionMatrix())
+spotLightFolder.add(light.shadow.camera, "far", 0.1, 100).onChange(() => light.shadow.camera.updateProjectionMatrix())
 spotLightFolder.add(data, "shadowMapSizeWidth", [256, 512, 1024, 2048, 4096]).onChange(() => updateShadowMapSize())
 spotLightFolder.add(data, "shadowMapSizeHeight", [256, 512, 1024, 2048, 4096]).onChange(() => updateShadowMapSize())
 spotLightFolder.add(light.position, 'x', -50, 50, 0.01)
