@@ -69,6 +69,11 @@ torus[2].position.x = 0
 torus[3].position.x = 4
 torus[4].position.x = 8
 
+light.target = torus[0]
+// To set it to a custom point
+// light.target.position.set(0, 10, 0)
+// scene.add(light.target)
+
 scene.add(torus[0])
 scene.add(torus[1])
 scene.add(torus[2])
@@ -119,7 +124,7 @@ meshesFolder.add(data, 'mapsEnabled').onChange(() => {
 function animate() {
     requestAnimationFrame(animate)
 
-    //helper.update()
+    helper.update()
 
     torus.forEach((t) => {
         t.rotation.y += 0.01
