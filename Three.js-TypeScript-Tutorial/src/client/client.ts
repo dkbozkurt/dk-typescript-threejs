@@ -31,12 +31,41 @@ mtlLoader.load(
     'models/monkey.mtl',
     (materials) => {
         materials.preload()
-        console.log(materials)
+
         const objLoader = new OBJLoader()
         objLoader.setMaterials(materials)
         objLoader.load(
             'models/monkey.obj',
             (object) => {
+                scene.add(object)
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+            },
+            (error) => {
+                console.log('An error happened')
+            }
+        )
+    },
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+    },
+    (error) => {
+        console.log('An error happened')
+    }
+)
+
+mtlLoader.load(
+    'models/monkeyTextured.mtl',
+    (materials) => {
+        materials.preload()
+
+        const objLoader = new OBJLoader()
+        objLoader.setMaterials(materials)
+        objLoader.load(
+            'models/monkeyTextured.obj',
+            (object) => {
+                object.position.x = 2.5
                 scene.add(object)
             },
             (xhr) => {
@@ -80,4 +109,4 @@ function render() {
     renderer.render(scene, camera)
 }
 
-animate() 
+animate()
