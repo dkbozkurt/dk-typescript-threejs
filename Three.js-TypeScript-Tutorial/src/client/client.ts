@@ -25,19 +25,19 @@ document.body.appendChild(renderer.domElement)
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
 
-// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true })
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true })
 
 const objLoader = new OBJLoader()
 objLoader.load(
     'models/cube.obj',
     (object) => {
-        console.log(object)
+        console.log(object);
         // (object.children[0] as THREE.Mesh).material = material
-        // object.traverse(function (child) {
-        //     if ((child as THREE.Mesh).isMesh) {
-        //         (child as THREE.Mesh).material = material
-        //     }
-        // })
+        object.traverse(function (child) {
+            if ((child as THREE.Mesh).isMesh) {
+                (child as THREE.Mesh).material = material
+            }
+        })
         scene.add(object)
     },
     (xhr) => {
