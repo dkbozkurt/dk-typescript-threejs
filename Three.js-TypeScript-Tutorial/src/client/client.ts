@@ -75,23 +75,23 @@ cubes.forEach((c) => {
     scene.add(c)
 })
 
-// const onKeyDown = function (event: KeyboardEvent) {
-//     switch (event.code) {
-//         case "KeyW":
-//             controls.moveForward(.25)
-//             break
-//         case "KeyA":
-//             controls.moveRight(-.25)
-//             break
-//         case "KeyS":
-//             controls.moveForward(-.25)
-//             break
-//         case "KeyD":
-//             controls.moveRight(.25)
-//             break
-//     }
-// }
-// document.addEventListener('keydown', onKeyDown, false)
+const onKeyDown = function (event: KeyboardEvent) {
+    switch (event.code) {
+        case "KeyW":
+            controls.moveForward(.25)
+            break
+        case "KeyA":
+            controls.moveRight(-.25)
+            break
+        case "KeyS":
+            controls.moveForward(-.25)
+            break
+        case "KeyD":
+            controls.moveRight(.25)
+            break
+    }
+}
+document.addEventListener('keydown', onKeyDown, false)
 
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
