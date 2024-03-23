@@ -11,6 +11,7 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 )
+
 camera.position.z = 2
 
 const renderer = new THREE.WebGLRenderer()
@@ -19,8 +20,10 @@ document.body.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
 
+// Instead of using camera.lookAt we should use the following two functions below to set target correctly while working with orbit controls.
 // camera.lookAt(0.5, 0.5, 0.5)
-// controls.target.set(.5, .5, .5)
+controls.target.set(.5, .5, .5)
+// Moved to animation loop!
 // controls.update()
 
 // controls.addEventListener('change', () => console.log("Controls Change"))
