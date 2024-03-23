@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import Stats from 'three/examples/jsm/libs/stats.module'
 
 const scene = new THREE.Scene()
@@ -11,52 +11,28 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 )
-
 camera.position.z = 2
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-const controls = new OrbitControls(camera, renderer.domElement)
+const controls = new TrackballControls(camera, renderer.domElement)
+controls.addEventListener('change', () => console.log("Controls Change"))
+controls.addEventListener('start', () => console.log("Controls Start Event"))
+controls.addEventListener('end', () => console.log("Controls End Event"))
+// controls.enabled = false
 
-// Instead of using camera.lookAt we should use the following two functions below to set target correctly while working with orbit controls.
-// camera.lookAt(0.5, 0.5, 0.5)
-// controls.target.set(.5, .5, .5)
-// Moved to animation loop!
-// controls.update()
-
-// controls.addEventListener('change', () => console.log("Controls Change"))
-// controls.addEventListener('start', () => console.log("Controls Start Event"))
-// controls.addEventListener('end', () => console.log("Controls End Event"))
-// controls.autoRotate = true
-// controls.autoRotateSpeed = 10
-
-// For smooth rotation effect use damping (works with controls.update())
-// controls.enableDamping = true
-// controls.dampingFactor = .01
-// controls.enableKeys = true //older versions
-// controls.listenToKeyEvents(document.body)
-// controls.keys = {
-//     LEFT: "ArrowLeft", //left arrow
-//     UP: "ArrowUp", // up arrow
-//     RIGHT: "ArrowRight", // right arrow
-//     BOTTOM: "ArrowDown" // down arrow
-// }
-// controls.mouseButtons = {
-//     LEFT: THREE.MOUSE.ROTATE,
-//     MIDDLE: THREE.MOUSE.DOLLY,
-//     RIGHT: THREE.MOUSE.PAN
-// }
-// controls.touches = {
-//     ONE: THREE.TOUCH.ROTATE,
-//     TWO: THREE.TOUCH.DOLLY_PAN
-// }
-// controls.screenSpacePanning = true
-// controls.minAzimuthAngle = 0
-// controls.maxAzimuthAngle = Math.PI / 2
-// controls.minPolarAngle = 0
-// controls.maxPolarAngle = Math.PI
+// Rest of the settings are down below
+// controls.rotateSpeed = 1.0
+// controls.zoomSpeed = 1.2
+// controls.panSpeed = 0.8
+// controls.keys = ['KeyA', 'KeyS', 'KeyD']
+// controls.noPan = true //default false
+// controls.noRotate = true //default false
+// controls.noZoom = true //default false
+// controls.staticMoving = true //default false
+// controls.dynamicDampingFactor = 0.1
 // controls.maxDistance = 4
 // controls.minDistance = 2
 
@@ -83,6 +59,7 @@ document.body.appendChild(stats.dom)
 function animate() {
     requestAnimationFrame(animate)
 
+    // trackball controls needs to be updated in the animation loop before it will work
     controls.update()
 
     render()
