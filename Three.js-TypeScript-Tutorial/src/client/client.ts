@@ -22,13 +22,13 @@ const controls = new OrbitControls(camera, renderer.domElement)
 
 // Instead of using camera.lookAt we should use the following two functions below to set target correctly while working with orbit controls.
 // camera.lookAt(0.5, 0.5, 0.5)
-controls.target.set(.5, .5, .5)
+// controls.target.set(.5, .5, .5)
 // Moved to animation loop!
 // controls.update()
 
-// controls.addEventListener('change', () => console.log("Controls Change"))
-// controls.addEventListener('start', () => console.log("Controls Start Event"))
-// controls.addEventListener('end', () => console.log("Controls End Event"))
+controls.addEventListener('change', () => console.log("Controls Change"))
+controls.addEventListener('start', () => console.log("Controls Start Event"))
+controls.addEventListener('end', () => console.log("Controls End Event"))
 // controls.autoRotate = true
 // controls.autoRotateSpeed = 10
 // controls.enableDamping = true
@@ -81,7 +81,7 @@ document.body.appendChild(stats.dom)
 function animate() {
     requestAnimationFrame(animate)
 
-    // controls.update()
+    controls.update()
 
     render()
 
