@@ -26,11 +26,13 @@ const controls = new OrbitControls(camera, renderer.domElement)
 // Moved to animation loop!
 // controls.update()
 
-controls.addEventListener('change', () => console.log("Controls Change"))
-controls.addEventListener('start', () => console.log("Controls Start Event"))
-controls.addEventListener('end', () => console.log("Controls End Event"))
+// controls.addEventListener('change', () => console.log("Controls Change"))
+// controls.addEventListener('start', () => console.log("Controls Start Event"))
+// controls.addEventListener('end', () => console.log("Controls End Event"))
 // controls.autoRotate = true
 // controls.autoRotateSpeed = 10
+
+// For smooth rotation effect use damping (works with controls.update())
 // controls.enableDamping = true
 // controls.dampingFactor = .01
 // controls.enableKeys = true //older versions
