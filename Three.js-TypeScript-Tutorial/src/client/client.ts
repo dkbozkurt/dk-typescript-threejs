@@ -70,7 +70,7 @@ fbxLoader.load(
                         fbxLoader.load('models/vanguard@goofyrunning.fbx',
                             (object) => {
                                 console.log("loaded goofyrunning");
-                                // (object as THREE.Object3D).animations[0].tracks.shift() //delete the specific track that moves the object forward while running
+                                (object as THREE.Object3D).animations[0].tracks.shift() //delete the specific track that moves the object forward while running
                                 //console.dir((object as THREE.Object3D).animations[0])
                                 const animationAction = mixer.clipAction((object as THREE.Object3D).animations[0]);
                                 animationActions.push(animationAction)
@@ -140,10 +140,10 @@ const setAction = (toAction: THREE.AnimationAction) => {
     if (toAction != activeAction) {
         lastAction = activeAction
         activeAction = toAction
-        lastAction.stop()
-        //lastAction.fadeOut(1)
+        // lastAction.stop()
+        lastAction.fadeOut(1)
         activeAction.reset()
-        //activeAction.fadeIn(1)
+        activeAction.fadeIn(1)
         activeAction.play()
     }
 }
