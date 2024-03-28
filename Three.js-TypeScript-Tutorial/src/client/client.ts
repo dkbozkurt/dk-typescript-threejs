@@ -113,7 +113,7 @@ function onMouseMove(event: MouseEvent) {
 
         const n = new THREE.Vector3();
         n.copy((intersects[0].face as THREE.Face).normal);
-    //     // n.transformDirection(intersects[0].object.matrixWorld);
+        n.transformDirection(intersects[0].object.matrixWorld);
 
         arrowHelper.setDirection(n);
         arrowHelper.position.copy(intersects[0].point);
