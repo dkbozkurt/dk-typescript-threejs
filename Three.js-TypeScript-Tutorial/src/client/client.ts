@@ -99,13 +99,42 @@ function onDoubleClick(event: MouseEvent) {
         new TWEEN.Tween(monkey.position)
         .to({
             x:p.x,
-            y:p.y+1,
+            // y:p.y+1,
             z: p.z
         },500)
         // .delay(1000)
-        .easing(TWEEN.Easing.Cubic.Out)
+        // .easing(TWEEN.Easing.Cubic.Out)
         // .onUpdate(() => render())
         .start();
+
+        new TWEEN.Tween(monkey.position)
+            .to(
+                {
+                    // x: p.x,
+                    y: p.y + 3,
+                    // z: p.z,
+                },
+                250
+            )
+            //.delay (1000)
+            .easing(TWEEN.Easing.Cubic.Out)
+            //.onUpdate(() => render())
+            .start()
+            .onComplete(() => {
+                new TWEEN.Tween(monkey.position)
+                    .to(
+                        {
+                            // x: p.x,
+                            y: p.y + 1,
+                            // z: p.z,
+                        },
+                        250
+                    )
+                    //.delay (250)
+                    .easing(TWEEN.Easing.Bounce.Out)
+                    //.onUpdate(() => render())
+                    .start()
+            })
     }
 }
 renderer.domElement.addEventListener('dblclick', onDoubleClick, false)
