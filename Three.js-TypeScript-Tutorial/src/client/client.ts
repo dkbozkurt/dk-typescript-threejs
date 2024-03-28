@@ -24,13 +24,13 @@ document.body.appendChild(renderer.domElement)
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
 
-// const material = new THREE.LineBasicMaterial({ color: 0xff0000 })
-// const points = new Array()
-// points.push( new THREE.Vector3( 0, 0, 0 ) )
-// points.push( new THREE.Vector3( 0, 0, .25 ) )
-// const geometry = new THREE.BufferGeometry().setFromPoints( points )
-// const line = new THREE.Line( geometry, material )
-// scene.add( line )
+const material = new THREE.LineBasicMaterial({ color: 0xff0000 })
+const points = new Array()
+points.push( new THREE.Vector3( 0, 0, 0 ) )
+points.push( new THREE.Vector3( 0, 0, .25 ) )
+const geometry = new THREE.BufferGeometry().setFromPoints( points )
+const line = new THREE.Line( geometry, material )
+scene.add( line )
 
 // const arrowHelper = new THREE.ArrowHelper(
 //     new THREE.Vector3(),
@@ -105,11 +105,11 @@ function onMouseMove(event: MouseEvent) {
     if (intersects.length > 0) {
     //     // console.log(sceneMeshes.length + " " + intersects.length)
     //     // console.log(intersects[0])
-    //      // console.log(intersects[0].object.userData.name + " " + intersects[0].distance + " ")
-    console.log((intersects[0].face as THREE.Face).normal)
-    //     // line.position.set(0, 0, 0)
-    //     // line.lookAt((intersects[0].face as THREE.Face).normal)
-    //     // line.position.copy(intersects[0].point)
+    //      //console.log(intersects[0].object.userData.name + " " + intersects[0].distance + " ")
+    //     // console.log((intersects[0].face as THREE.Face).normal)
+        line.position.set(0, 0, 0)
+        line.lookAt((intersects[0].face as THREE.Face).normal)
+        line.position.copy(intersects[0].point)
 
     //     // const n = new THREE.Vector3();
     //     // n.copy((intersects[0].face as THREE.Face).normal);
