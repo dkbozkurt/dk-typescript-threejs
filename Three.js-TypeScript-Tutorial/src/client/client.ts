@@ -105,8 +105,8 @@ function onMouseMove(event: MouseEvent) {
     if (intersects.length > 0) {
     //     // console.log(sceneMeshes.length + " " + intersects.length)
     //     // console.log(intersects[0])
-    console.log(intersects[0].object.userData.name + " " + intersects[0].distance + " ")
-    //     // console.log((intersects[0].face as THREE.Face).normal)
+    //      // console.log(intersects[0].object.userData.name + " " + intersects[0].distance + " ")
+    console.log((intersects[0].face as THREE.Face).normal)
     //     // line.position.set(0, 0, 0)
     //     // line.lookAt((intersects[0].face as THREE.Face).normal)
     //     // line.position.copy(intersects[0].point)
