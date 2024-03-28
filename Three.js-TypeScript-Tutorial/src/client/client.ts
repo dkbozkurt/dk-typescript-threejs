@@ -49,7 +49,7 @@ controls.enableDamping = true
 
 const loader = new GLTFLoader()
 loader.load(
-    'models/monkey_textured.glb',
+    'models/monkey.glb',
     function (gltf) {
         gltf.scene.traverse(function (child) {
             if ((child as THREE.Mesh).isMesh) {
@@ -87,37 +87,37 @@ function onWindowResize() {
 }
 
 // renderer.domElement.addEventListener('dblclick', onDoubleClick, false)
-// renderer.domElement.addEventListener('mousemove', onMouseMove, false)
+renderer.domElement.addEventListener('mousemove', onMouseMove, false)
 
-// function onMouseMove(event: MouseEvent) {
-//     const mouse = {
-//         x: (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
-//         y: -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
-//     } as THREE.Vector2
+function onMouseMove(event: MouseEvent) {
+    const mouse = {
+        x: (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
+        y: -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
+    } as THREE.Vector2
 
-//     // console.log(mouse)
+    console.log(mouse)
 
-//     // raycaster.setFromCamera(mouse, camera);
+    // raycaster.setFromCamera(mouse, camera);
 
-//     // const intersects = raycaster.intersectObjects(sceneMeshes, false)
+    // const intersects = raycaster.intersectObjects(sceneMeshes, false)
 
-//     // if (intersects.length > 0) {
-//     //     // console.log(sceneMeshes.length + " " + intersects.length)
-//     //     // console.log(intersects[0])
-//     //     // console.log(intersects[0].object.userData.name + " " + intersects[0].distance + " ")
-//     //     // console.log((intersects[0].face as THREE.Face).normal)
-//     //     // line.position.set(0, 0, 0)
-//     //     // line.lookAt((intersects[0].face as THREE.Face).normal)
-//     //     // line.position.copy(intersects[0].point)
+    // if (intersects.length > 0) {
+    //     // console.log(sceneMeshes.length + " " + intersects.length)
+    //     // console.log(intersects[0])
+    //     // console.log(intersects[0].object.userData.name + " " + intersects[0].distance + " ")
+    //     // console.log((intersects[0].face as THREE.Face).normal)
+    //     // line.position.set(0, 0, 0)
+    //     // line.lookAt((intersects[0].face as THREE.Face).normal)
+    //     // line.position.copy(intersects[0].point)
 
-//     //     // const n = new THREE.Vector3();
-//     //     // n.copy((intersects[0].face as THREE.Face).normal);
-//     //     // n.transformDirection(intersects[0].object.matrixWorld);
+    //     // const n = new THREE.Vector3();
+    //     // n.copy((intersects[0].face as THREE.Face).normal);
+    //     // n.transformDirection(intersects[0].object.matrixWorld);
 
-//     //     // arrowHelper.setDirection(n);
-//     //     // arrowHelper.position.copy(intersects[0].point);
-//     // }
-// }
+    //     // arrowHelper.setDirection(n);
+    //     // arrowHelper.position.copy(intersects[0].point);
+    // }
+}
 
 // function onDoubleClick(event: MouseEvent) {
 //     const mouse = {
