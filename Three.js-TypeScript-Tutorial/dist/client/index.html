@@ -13,15 +13,21 @@
                 margin: 0px;
             }
 
-            .measurementLabel {
+            #locationData {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                font-size: 12px;
                 font-family: monospace;
-                background-color: black;
-                color: white;
+                color: #00ff00;
+                pointer-events: none;
+                user-select: none;
             }
         </style>
     </head>
 
     <body>
+        <div id="locationData"></div>
         <script type="module" src="bundle.js"></script>
     </body>
 </html>
