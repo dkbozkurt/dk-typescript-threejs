@@ -83,18 +83,18 @@ function onDoubleClick(event: MouseEvent) {
 
     if (intersects.length > 0) {
         const p = intersects[0].point
-        controls.target.set(p.x, p.y, p.z)
-        
-        // new TWEEN.Tween(controls.target)
-        //     .to({
-        //         x: p.x,
-        //         y: p.y,
-        //         z: p.z
-        //     }, 500)
-        //     //.delay (1000)
-        //     .easing(TWEEN.Easing.Cubic.Out)
-        //     //.onUpdate(() => render())
-        //     .start()
+        // controls.target.set(p.x, p.y, p.z)
+
+        new TWEEN.Tween(controls.target)
+            .to({
+                x: p.x,
+                y: p.y,
+                z: p.z
+            }, 500)
+            //.delay (1000)
+            .easing(TWEEN.Easing.Cubic.Out)
+            //.onUpdate(() => render())
+            .start()
     }
 }
 renderer.domElement.addEventListener('dblclick', onDoubleClick, false)
