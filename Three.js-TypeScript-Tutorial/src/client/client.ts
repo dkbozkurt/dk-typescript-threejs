@@ -57,7 +57,7 @@ loader.load(
                 m.receiveShadow = true
                 m.castShadow = true;
                 (m.material as THREE.MeshStandardMaterial).flatShading = true
-                sceneMeshes.push(m)
+                // sceneMeshes.push(m)
             }
             if ((child as THREE.Light).isLight) {
                 const l = child as THREE.SpotLight
@@ -68,7 +68,7 @@ loader.load(
             }
         })
         scene.add(gltf.scene)
-        //sceneMeshes.push(gltf.scene)
+        sceneMeshes.push(gltf.scene)
     },
     (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
@@ -100,7 +100,7 @@ function onMouseMove(event: MouseEvent) {
     raycaster.setFromCamera(mouse, camera);
 
     // For single mesh detection we can use raycaster.intersectObject(mySingleMesh, false)
-    const intersects = raycaster.intersectObjects(sceneMeshes, false)
+    const intersects = raycaster.intersectObjects(sceneMeshes, true)
 
     if (intersects.length > 0) {
     //     // console.log(sceneMeshes.length + " " + intersects.length)
@@ -128,7 +128,7 @@ function onDoubleClick(event: MouseEvent) {
 
     raycaster.setFromCamera(mouse, camera)
 
-    const intersects = raycaster.intersectObjects(sceneMeshes, false)
+    const intersects = raycaster.intersectObjects(sceneMeshes, true)
 
     if (intersects.length > 0) {
 
