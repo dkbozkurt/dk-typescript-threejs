@@ -24,20 +24,20 @@ document.body.appendChild(renderer.domElement)
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
 
-const material = new THREE.LineBasicMaterial({ color: 0xff0000 })
-const points = new Array()
-points.push( new THREE.Vector3( 0, 0, 0 ) )
-points.push( new THREE.Vector3( 0, 0, .25 ) )
-const geometry = new THREE.BufferGeometry().setFromPoints( points )
-const line = new THREE.Line( geometry, material )
-scene.add( line )
+// const material = new THREE.LineBasicMaterial({ color: 0xff0000 })
+// const points = new Array()
+// points.push( new THREE.Vector3( 0, 0, 0 ) )
+// points.push( new THREE.Vector3( 0, 0, .25 ) )
+// const geometry = new THREE.BufferGeometry().setFromPoints( points )
+// const line = new THREE.Line( geometry, material )
+// scene.add( line )
 
-// const arrowHelper = new THREE.ArrowHelper(
-//     new THREE.Vector3(),
-//     new THREE.Vector3(),
-//     .25,
-//     0xffff00)
-// scene.add(arrowHelper)
+const arrowHelper = new THREE.ArrowHelper(
+    new THREE.Vector3(),
+    new THREE.Vector3(),
+    .25,
+    0xffff00)
+scene.add(arrowHelper)
 
 // const material = new THREE.MeshNormalMaterial()
 
@@ -107,16 +107,16 @@ function onMouseMove(event: MouseEvent) {
     //     // console.log(intersects[0])
     //      //console.log(intersects[0].object.userData.name + " " + intersects[0].distance + " ")
     //     // console.log((intersects[0].face as THREE.Face).normal)
-        line.position.set(0, 0, 0)
-        line.lookAt((intersects[0].face as THREE.Face).normal)
-        line.position.copy(intersects[0].point)
+    //     // line.position.set(0, 0, 0)
+    //     // line.lookAt((intersects[0].face as THREE.Face).normal)
+    //     // line.position.copy(intersects[0].point)
 
-    //     // const n = new THREE.Vector3();
-    //     // n.copy((intersects[0].face as THREE.Face).normal);
+        const n = new THREE.Vector3();
+        n.copy((intersects[0].face as THREE.Face).normal);
     //     // n.transformDirection(intersects[0].object.matrixWorld);
 
-    //     // arrowHelper.setDirection(n);
-    //     // arrowHelper.position.copy(intersects[0].point);
+        arrowHelper.setDirection(n);
+        arrowHelper.position.copy(intersects[0].point);
     }
 }
 
