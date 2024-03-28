@@ -39,10 +39,10 @@ const arrowHelper = new THREE.ArrowHelper(
     0xffff00)
 scene.add(arrowHelper)
 
-// const material = new THREE.MeshNormalMaterial()
+const material = new THREE.MeshNormalMaterial()
 
-// const boxGeometry = new THREE.BoxGeometry(.2, .2, .2)
-// const coneGeometry = new THREE.ConeGeometry(.05, .2, 8)
+const boxGeometry = new THREE.BoxGeometry(.2, .2, .2)
+const coneGeometry = new THREE.ConeGeometry(.05, .2, 8)
 
 const raycaster = new THREE.Raycaster()
 const sceneMeshes: THREE.Object3D[] = []
@@ -86,7 +86,7 @@ function onWindowResize() {
     render()
 }
 
-// renderer.domElement.addEventListener('dblclick', onDoubleClick, false)
+renderer.domElement.addEventListener('dblclick', onDoubleClick, false)
 renderer.domElement.addEventListener('mousemove', onMouseMove, false)
 
 function onMouseMove(event: MouseEvent) {
@@ -120,34 +120,33 @@ function onMouseMove(event: MouseEvent) {
     }
 }
 
-// function onDoubleClick(event: MouseEvent) {
-//     const mouse = {
-//         x: (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
-//         y: -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
-//     } as THREE.Vector2
+function onDoubleClick(event: MouseEvent) {
+    const mouse = {
+        x: (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
+        y: -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
+    } as THREE.Vector2
 
-//     raycaster.setFromCamera(mouse, camera)
+    raycaster.setFromCamera(mouse, camera)
 
-//     const intersects = raycaster.intersectObjects(sceneMeshes, false)
+    const intersects = raycaster.intersectObjects(sceneMeshes, false)
 
-//     if (intersects.length > 0) {
+    if (intersects.length > 0) {
 
-//         const n = new THREE.Vector3()
-//         n.copy((intersects[0].face as THREE.Face).normal)
-//         n.transformDirection(intersects[0].object.matrixWorld)
+        const n = new THREE.Vector3()
+        n.copy((intersects[0].face as THREE.Face).normal)
+        n.transformDirection(intersects[0].object.matrixWorld)
 
-//         const cube = new THREE.Mesh(boxGeometry, material)
-//         // const cube = new THREE.Mesh(coneGeometry, material)
+        // const cube = new THREE.Mesh(boxGeometry, material)
+        const cube = new THREE.Mesh(coneGeometry, material)
 
-//         cube.lookAt(n)
-//         // cube.rotateX(Math.PI / 2)
-//         cube.position.copy(intersects[0].point)
-//         // cube.position.addScaledVector(n, .1)
-
-//         scene.add(cube)
-//         // sceneMeshes.push(cube)
-//     }
-// }
+        cube.lookAt(n)
+        cube.rotateX(Math.PI / 2) // Fixes the rotation of the cone
+        cube.position.copy(intersects[0].point)
+        cube.position.addScaledVector(n, .1) // Shifts the cone up a bit,  for it to be on the surface of the mesh
+        scene.add(cube)
+        sceneMeshes.push(cube) // Helps to stack cones top of each other
+    }
+}
 
 const stats = new Stats()
 document.body.appendChild(stats.dom)
