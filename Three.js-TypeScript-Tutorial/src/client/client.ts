@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import Stats from 'three/examples/jsm/libs/stats.module'
-import TWEEN from '@tweenjs/tween.js'
+import TWEEN, { Tween } from '@tweenjs/tween.js'
 
 const scene = new THREE.Scene()
 scene.add(new THREE.AxesHelper(5))
@@ -85,16 +85,27 @@ function onDoubleClick(event: MouseEvent) {
         const p = intersects[0].point
         // controls.target.set(p.x, p.y, p.z)
 
-        new TWEEN.Tween(controls.target)
-            .to({
-                x: p.x,
-                y: p.y,
-                z: p.z
-            }, 500)
-            //.delay (1000)
-            .easing(TWEEN.Easing.Cubic.Out)
-            //.onUpdate(() => render())
-            .start()
+        // new TWEEN.Tween(controls.target)
+        //     .to({
+        //         x: p.x,
+        //         y: p.y,
+        //         z: p.z
+        //     }, 500)
+        //     //.delay (1000)
+        //     .easing(TWEEN.Easing.Cubic.Out)
+        //     //.onUpdate(() => render())
+        //     .start()
+
+        new TWEEN.Tween(monkey.position)
+        .to({
+            x:p.x,
+            y:p.y+1,
+            z: p.z
+        },500)
+        // .delay(1000)
+        .easing(TWEEN.Easing.Cubic.Out)
+        // .onUpdate(() => render())
+        .start();
     }
 }
 renderer.domElement.addEventListener('dblclick', onDoubleClick, false)
