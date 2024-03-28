@@ -44,8 +44,8 @@ controls.enableDamping = true
 // const boxGeometry = new THREE.BoxGeometry(.2, .2, .2)
 // const coneGeometry = new THREE.ConeGeometry(.05, .2, 8)
 
-// const raycaster = new THREE.Raycaster()
-// const sceneMeshes: THREE.Object3D[] = []
+const raycaster = new THREE.Raycaster()
+const sceneMeshes: THREE.Object3D[] = []
 
 const loader = new GLTFLoader()
 loader.load(
@@ -57,7 +57,7 @@ loader.load(
                 m.receiveShadow = true
                 m.castShadow = true
                 // ;(m.material as THREE.MeshStandardMaterial).flatShading = true
-                // sceneMeshes.push(m)
+                sceneMeshes.push(m)
             }
             if ((child as THREE.Light).isLight) {
                 const l = child as THREE.SpotLight
@@ -95,16 +95,17 @@ function onMouseMove(event: MouseEvent) {
         y: -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
     } as THREE.Vector2
 
-    console.log(mouse)
+    // console.log(mouse)
 
-    // raycaster.setFromCamera(mouse, camera);
+    raycaster.setFromCamera(mouse, camera);
 
-    // const intersects = raycaster.intersectObjects(sceneMeshes, false)
+    // For single mesh detection we can use raycaster.intersectObject(mySingleMesh, false)
+    const intersects = raycaster.intersectObjects(sceneMeshes, false)
 
-    // if (intersects.length > 0) {
+    if (intersects.length > 0) {
     //     // console.log(sceneMeshes.length + " " + intersects.length)
     //     // console.log(intersects[0])
-    //     // console.log(intersects[0].object.userData.name + " " + intersects[0].distance + " ")
+    console.log(intersects[0].object.userData.name + " " + intersects[0].distance + " ")
     //     // console.log((intersects[0].face as THREE.Face).normal)
     //     // line.position.set(0, 0, 0)
     //     // line.lookAt((intersects[0].face as THREE.Face).normal)
@@ -116,7 +117,7 @@ function onMouseMove(event: MouseEvent) {
 
     //     // arrowHelper.setDirection(n);
     //     // arrowHelper.position.copy(intersects[0].point);
-    // }
+    }
 }
 
 // function onDoubleClick(event: MouseEvent) {
