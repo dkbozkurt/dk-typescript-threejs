@@ -55,8 +55,8 @@ loader.load(
             if ((child as THREE.Mesh).isMesh) {
                 const m = child as THREE.Mesh
                 m.receiveShadow = true
-                m.castShadow = true
-                // ;(m.material as THREE.MeshStandardMaterial).flatShading = true
+                m.castShadow = true;
+                (m.material as THREE.MeshStandardMaterial).flatShading = true
                 sceneMeshes.push(m)
             }
             if ((child as THREE.Light).isLight) {
