@@ -147,11 +147,11 @@ const planeMesh = new THREE.Mesh(planeGeometry, phongMaterial)
 planeMesh.rotateX(-Math.PI / 2)
 planeMesh.receiveShadow = true
 scene.add(planeMesh)
-// const planeShape = new CANNON.Plane()
-// const planeBody = new CANNON.Body({ mass: 0 })
-// planeBody.addShape(planeShape)
-// planeBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2)
-// world.addBody(planeBody)
+const planeShape = new CANNON.Plane()
+const planeBody = new CANNON.Body({ mass: 0 }) // We make the object static by setting mass to zero
+planeBody.addShape(planeShape)
+planeBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2)
+world.addBody(planeBody)
 
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
