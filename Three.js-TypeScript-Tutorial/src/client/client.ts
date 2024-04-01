@@ -83,10 +83,10 @@ objLoader.load(
             scene.add(monkeyMeshClone)
             monkeyMeshes.push(monkeyMeshClone)
 
-            const monkeyShape = CannonUtils.CreateTrimesh(
-                (monkeyMesh as THREE.Mesh).geometry
-            )
-            // const monkeyShape = CannonUtils.CreateConvexPolyhedron(new THREE.IcosahedronGeometry(1))
+            // const monkeyShape = CannonUtils.CreateTrimesh(
+            //     (monkeyMesh as THREE.Mesh).geometry
+            // )
+            const monkeyShape = CannonUtils.CreateConvexPolyhedron(new THREE.IcosahedronGeometry(1))
             // const monkeyShape = CannonUtils.CreateConvexPolyhedron((monkeyMesh as THREE.Mesh).geometry)
             // const monkeyShape = CannonUtils.CreateConvexPolyhedron(convexHull)
 
