@@ -75,13 +75,13 @@ sphereMesh.position.x = -1
 sphereMesh.position.y = 3
 sphereMesh.castShadow = true
 scene.add(sphereMesh)
-// const sphereShape = new CANNON.Sphere(1)
-// const sphereBody = new CANNON.Body({ mass: 1 })
-// sphereBody.addShape(sphereShape)
-// sphereBody.position.x = sphereMesh.position.x
-// sphereBody.position.y = sphereMesh.position.y
-// sphereBody.position.z = sphereMesh.position.z
-// world.addBody(sphereBody)
+const sphereShape = new CANNON.Sphere(1)
+const sphereBody = new CANNON.Body({ mass: 1 })
+sphereBody.addShape(sphereShape)
+sphereBody.position.x = sphereMesh.position.x
+sphereBody.position.y = sphereMesh.position.y
+sphereBody.position.z = sphereMesh.position.z
+world.addBody(sphereBody)
 
 const icosahedronGeometry = new THREE.IcosahedronGeometry(1, 0)
 const icosahedronMesh = new THREE.Mesh(icosahedronGeometry, normalMaterial)
@@ -191,13 +191,13 @@ function animate() {
         cubeBody.quaternion.z,
         cubeBody.quaternion.w
     )
-    // sphereMesh.position.set(sphereBody.position.x, sphereBody.position.y, sphereBody.position.z)
-    // sphereMesh.quaternion.set(
-    //     sphereBody.quaternion.x,
-    //     sphereBody.quaternion.y,
-    //     sphereBody.quaternion.z,
-    //     sphereBody.quaternion.w
-    // )
+    sphereMesh.position.set(sphereBody.position.x, sphereBody.position.y, sphereBody.position.z)
+    sphereMesh.quaternion.set(
+        sphereBody.quaternion.x,
+        sphereBody.quaternion.y,
+        sphereBody.quaternion.z,
+        sphereBody.quaternion.w
+    )
     // icosahedronMesh.position.set(
     //     icosahedronBody.position.x,
     //     icosahedronBody.position.y,
