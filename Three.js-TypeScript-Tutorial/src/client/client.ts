@@ -68,12 +68,12 @@ objLoader.load(
         const monkeyMesh = object.children[0] as THREE.Mesh
         monkeyMesh.material = normalMaterial
 
-        const positions = monkeyMesh.geometry.attributes.position.array
-        const points: THREE.Vector3[] = []
-        for (let i = 0; i < positions.length; i += 3) {
-            points.push(new THREE.Vector3(positions[i], positions[i + 1], positions[i + 2]))
-        }
-        const convexHull = new ConvexGeometry(points)
+        // const positions = monkeyMesh.geometry.attributes.position.array
+        // const points: THREE.Vector3[] = []
+        // for (let i = 0; i < positions.length; i += 3) {
+        //     points.push(new THREE.Vector3(positions[i], positions[i + 1], positions[i + 2]))
+        // }
+        // const convexHull = new ConvexGeometry(points)
 
         for (let i = 0; i < 10; i++) {
             const monkeyMeshClone = monkeyMesh.clone()
@@ -88,15 +88,15 @@ objLoader.load(
             // )
             // const monkeyShape = CannonUtils.CreateConvexPolyhedron(new THREE.IcosahedronGeometry(1))
             // const monkeyShape = CannonUtils.CreateConvexPolyhedron((monkeyMesh as THREE.Mesh).geometry)
-            const monkeyShape = CannonUtils.CreateConvexPolyhedron(convexHull)
+            // const monkeyShape = CannonUtils.CreateConvexPolyhedron(convexHull)
 
             const monkeyBody = new CANNON.Body({ mass: 1 })
-            monkeyBody.addShape(monkeyShape)
+            // monkeyBody.addShape(monkeyShape)
             // monkeyBody.addShape(new CANNON.Sphere(1))// head,
-            // monkeyBody.addShape(new CANNON.Sphere(.8), new CANNON.Vec3(0, .2, 0))// head,
-            // monkeyBody.addShape(new CANNON.Sphere(.05), new CANNON.Vec3(0, -.97, 0.46))// chin,
-            // monkeyBody.addShape(new CANNON.Sphere(.05), new CANNON.Vec3(-1.36, .29, -0.5)) //left ear
-            // monkeyBody.addShape(new CANNON.Sphere(.05), new CANNON.Vec3(1.36, .29, -0.5)) //right ear
+            monkeyBody.addShape(new CANNON.Sphere(.8), new CANNON.Vec3(0, .2, 0))// head,
+            monkeyBody.addShape(new CANNON.Sphere(.05), new CANNON.Vec3(0, -.97, 0.46))// chin,
+            monkeyBody.addShape(new CANNON.Sphere(.05), new CANNON.Vec3(-1.36, .29, -0.5)) //left ear
+            monkeyBody.addShape(new CANNON.Sphere(.05), new CANNON.Vec3(1.36, .29, -0.5)) //right ear
             monkeyBody.position.x = monkeyMeshClone.position.x
             monkeyBody.position.y = monkeyMeshClone.position.y
             monkeyBody.position.z = monkeyMeshClone.position.z
