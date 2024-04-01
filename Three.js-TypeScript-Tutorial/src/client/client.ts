@@ -145,15 +145,15 @@ objLoader.load(
         // const monkeyShape = CannonUtils.CreateTrimesh(
         //     (monkeyMesh as THREE.Mesh).geometry
         // )
-        const monkeyShape = CannonUtils.CreateConvexPolyhedron(
-            (monkeyMesh as THREE.Mesh).geometry
-        )
+        // const monkeyShape = CannonUtils.CreateConvexPolyhedron(
+        //     (monkeyMesh as THREE.Mesh).geometry
+        // )
         monkeyBody = new CANNON.Body({ mass: 1 })
-        monkeyBody.addShape(monkeyShape)
+        // monkeyBody.addShape(monkeyShape)
         // monkeyBody.addShape(cubeShape)
         // monkeyBody.addShape(sphereShape)
         // monkeyBody.addShape(cylinderShape)
-        // monkeyBody.addShape(icosahedronShape)
+        monkeyBody.addShape(icosahedronShape)
         // monkeyBody.addShape(new CANNON.Plane())
         // monkeyBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2)
         monkeyBody.position.x = monkeyMesh.position.x
