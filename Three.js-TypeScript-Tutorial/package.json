@@ -12,6 +12,7 @@
   "devDependencies": {
     "@types/dat.gui": "^0.7.12",
     "@types/three": "^0.161.2",
+    "cannon-es": "^0.20.0",
     "dat.gui": "^0.7.9",
     "three": "^0.161.0",
     "ts-loader": "^9.5.1",
