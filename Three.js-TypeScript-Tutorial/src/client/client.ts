@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Stats from 'three/examples/jsm/libs/stats.module'
-import TWEEN from '@tweenjs/tween.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import TWEEN from '@tweenjs/tween.js'
 
 const scene = new THREE.Scene()
 scene.add(new THREE.AxesHelper(5))
@@ -28,6 +28,8 @@ controls.enableDamping = true
 const raycaster = new THREE.Raycaster()
 const sceneMeshes: THREE.Object3D[] = []
 
+let monkey: THREE.Object3D
+
 const loader = new GLTFLoader()
 loader.load(
     'models/monkey.glb',
@@ -37,6 +39,7 @@ loader.load(
                 const m = child as THREE.Mesh
                 if (m.name === 'Suzanne') {
                     m.castShadow = true
+                    monkey = m
                 } else {
                     // floor
                     m.receiveShadow = true
@@ -50,6 +53,8 @@ loader.load(
             }
         })
         scene.add(gltf.scene)
+
+        chainTweens()
     },
     (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
@@ -58,6 +63,41 @@ loader.load(
         console.log(error)
     }
 )
+
+function chainTweens() {
+    // Demonstrating a repeating sequence of tweens.
+    const changePositionZ = new TWEEN.Tween(monkey.position).to({ z: -2 }, 2000) // 2 seconds
+    const rotateY = new TWEEN.Tween(monkey.rotation).to(
+        { y: Math.PI * 2 },
+        2000
+    )
+    const scaleXZ = new TWEEN.Tween(monkey.scale).to({ x: 2, z: 0.5 }, 2000)
+    const rotateZ = new TWEEN.Tween(monkey.rotation).to(
+        { z: Math.PI * 2 },
+        2000
+    )
+    const resetScaleXZ = new TWEEN.Tween(monkey.scale).to({ x: 1, z: 1 }, 2000)
+    const resetPositionZ = new TWEEN.Tween(monkey.position).to({ z: 0 }, 2000)
+    const rotateX = new TWEEN.Tween(monkey.rotation).to(
+        { x: Math.PI * 2 },
+        2000
+    )
+    const resetRotations = new TWEEN.Tween(monkey.rotation).to(
+        { x: 0, y: 0, z: 0 },
+        0
+    ) // 0 seconds results in an instant tween
+
+    changePositionZ.chain(rotateY)
+    rotateY.chain(scaleXZ)
+    scaleXZ.chain(rotateZ)
+    rotateZ.chain(resetScaleXZ)
+    resetScaleXZ.chain(resetPositionZ)
+    resetPositionZ.chain(rotateX)
+    rotateX.chain(resetRotations)
+    resetRotations.chain(changePositionZ) // begin the loop again
+
+    changePositionZ.start()
+}
 
 const mouse = new THREE.Vector2()
 function onDoubleClick(event: MouseEvent) {
