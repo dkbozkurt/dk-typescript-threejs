@@ -203,7 +203,7 @@ physicsFolder.open()
 const clock = new THREE.Clock()
 let delta
 
-// const cannonDebugRenderer = new CannonDebugRenderer(scene, world)
+const cannonDebugRenderer = new CannonDebugRenderer(scene, world)
 
 function animate() {
     requestAnimationFrame(animate)
@@ -213,7 +213,7 @@ function animate() {
     delta = Math.min(clock.getDelta(), 0.1)
     world.step(delta)
 
-    // cannonDebugRenderer.update()
+    cannonDebugRenderer.update()
 
     // Copy coordinates from Cannon to Three.js
     cubeMesh.position.set(
