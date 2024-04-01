@@ -68,12 +68,12 @@ objLoader.load(
         const monkeyMesh = object.children[0] as THREE.Mesh
         monkeyMesh.material = normalMaterial
 
-        // const positions = monkeyMesh.geometry.attributes.position.array
-        // const points: THREE.Vector3[] = []
-        // for (let i = 0; i < positions.length; i += 3) {
-        //     points.push(new THREE.Vector3(positions[i], positions[i + 1], positions[i + 2]))
-        // }
-        // const convexHull = new ConvexGeometry(points)
+        const positions = monkeyMesh.geometry.attributes.position.array
+        const points: THREE.Vector3[] = []
+        for (let i = 0; i < positions.length; i += 3) {
+            points.push(new THREE.Vector3(positions[i], positions[i + 1], positions[i + 2]))
+        }
+        const convexHull = new ConvexGeometry(points)
 
         for (let i = 0; i < 10; i++) {
             const monkeyMeshClone = monkeyMesh.clone()
@@ -86,9 +86,9 @@ objLoader.load(
             // const monkeyShape = CannonUtils.CreateTrimesh(
             //     (monkeyMesh as THREE.Mesh).geometry
             // )
-            const monkeyShape = CannonUtils.CreateConvexPolyhedron(new THREE.IcosahedronGeometry(1))
+            // const monkeyShape = CannonUtils.CreateConvexPolyhedron(new THREE.IcosahedronGeometry(1))
             // const monkeyShape = CannonUtils.CreateConvexPolyhedron((monkeyMesh as THREE.Mesh).geometry)
-            // const monkeyShape = CannonUtils.CreateConvexPolyhedron(convexHull)
+            const monkeyShape = CannonUtils.CreateConvexPolyhedron(convexHull)
 
             const monkeyBody = new CANNON.Body({ mass: 1 })
             monkeyBody.addShape(monkeyShape)
