@@ -128,19 +128,19 @@ scene.add(torusKnotMesh)
 //     vertices: torusKnotPoints,
 //     faces: torusKnotFaces,
 // })
-// const torusKnotShape = CreateTrimesh(torusKnotMesh.geometry)
-// const torusKnotBody = new CANNON.Body({ mass: 1 })
-// torusKnotBody.addShape(torusKnotShape)
-// torusKnotBody.position.x = torusKnotMesh.position.x
-// torusKnotBody.position.y = torusKnotMesh.position.y
-// torusKnotBody.position.z = torusKnotMesh.position.z
-// world.addBody(torusKnotBody)
+const torusKnotShape = CreateTrimesh(torusKnotMesh.geometry)
+const torusKnotBody = new CANNON.Body({ mass: 1 })
+torusKnotBody.addShape(torusKnotShape)
+torusKnotBody.position.x = torusKnotMesh.position.x
+torusKnotBody.position.y = torusKnotMesh.position.y
+torusKnotBody.position.z = torusKnotMesh.position.z
+world.addBody(torusKnotBody)
 
-// function CreateTrimesh(geometry: THREE.BufferGeometry) {
-//     const vertices = (geometry.attributes.position as THREE.BufferAttribute).array
-//     const indices = Object.keys(vertices).map(Number)
-//     return new CANNON.Trimesh(vertices as unknown as number[], indices)
-// }
+function CreateTrimesh(geometry: THREE.BufferGeometry) {
+    const vertices = (geometry.attributes.position as THREE.BufferAttribute).array
+    const indices = Object.keys(vertices).map(Number)
+    return new CANNON.Trimesh(vertices as unknown as number[], indices)
+}
 
 const planeGeometry = new THREE.PlaneGeometry(25, 25)
 const planeMesh = new THREE.Mesh(planeGeometry, phongMaterial)
@@ -209,17 +209,17 @@ function animate() {
         icosahedronBody.quaternion.z,
         icosahedronBody.quaternion.w
     )
-    // torusKnotMesh.position.set(
-    //     torusKnotBody.position.x,
-    //     torusKnotBody.position.y,
-    //     torusKnotBody.position.z
-    // )
-    // torusKnotMesh.quaternion.set(
-    //     torusKnotBody.quaternion.x,
-    //     torusKnotBody.quaternion.y,
-    //     torusKnotBody.quaternion.z,
-    //     torusKnotBody.quaternion.w
-    // )
+    torusKnotMesh.position.set(
+        torusKnotBody.position.x,
+        torusKnotBody.position.y,
+        torusKnotBody.position.z
+    )
+    torusKnotMesh.quaternion.set(
+        torusKnotBody.quaternion.x,
+        torusKnotBody.quaternion.y,
+        torusKnotBody.quaternion.z,
+        torusKnotBody.quaternion.w
+    )
 
     render()
 
