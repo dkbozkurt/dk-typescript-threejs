@@ -89,25 +89,25 @@ icosahedronMesh.position.x = 1
 icosahedronMesh.position.y = 3
 icosahedronMesh.castShadow = true
 scene.add(icosahedronMesh)
-// let position = (icosahedronMesh.geometry.attributes.position as THREE.BufferAttribute).array
-// const icosahedronPoints: CANNON.Vec3[] = []
-// for (let i = 0; i < position.length; i += 3) {
-//     icosahedronPoints.push(new CANNON.Vec3(position[i], position[i + 1], position[i + 2]))
-// }
-// const icosahedronFaces: number[][] = []
-// for (let i = 0; i < position.length / 3; i += 3) {
-//     icosahedronFaces.push([i, i + 1, i + 2])
-// }
-// const icosahedronShape = new CANNON.ConvexPolyhedron({
-//     vertices: icosahedronPoints,
-//     faces: icosahedronFaces,
-// })
-// const icosahedronBody = new CANNON.Body({ mass: 1 })
-// icosahedronBody.addShape(icosahedronShape)
-// icosahedronBody.position.x = icosahedronMesh.position.x
-// icosahedronBody.position.y = icosahedronMesh.position.y
-// icosahedronBody.position.z = icosahedronMesh.position.z
-// world.addBody(icosahedronBody)
+let position = (icosahedronMesh.geometry.attributes.position as THREE.BufferAttribute).array
+const icosahedronPoints: CANNON.Vec3[] = []
+for (let i = 0; i < position.length; i += 3) {
+    icosahedronPoints.push(new CANNON.Vec3(position[i], position[i + 1], position[i + 2]))
+}
+const icosahedronFaces: number[][] = []
+for (let i = 0; i < position.length / 3; i += 3) {
+    icosahedronFaces.push([i, i + 1, i + 2])
+}
+const icosahedronShape = new CANNON.ConvexPolyhedron({
+    vertices: icosahedronPoints,
+    faces: icosahedronFaces,
+})
+const icosahedronBody = new CANNON.Body({ mass: 1 })
+icosahedronBody.addShape(icosahedronShape)
+icosahedronBody.position.x = icosahedronMesh.position.x
+icosahedronBody.position.y = icosahedronMesh.position.y
+icosahedronBody.position.z = icosahedronMesh.position.z
+world.addBody(icosahedronBody)
 
 const torusKnotGeometry = new THREE.TorusKnotGeometry()
 const torusKnotMesh = new THREE.Mesh(torusKnotGeometry, normalMaterial)
@@ -179,8 +179,8 @@ function animate() {
 
     controls.update()
 
-    delta = clock.getDelta()
-    // //delta = Math.min(clock.getDelta(), 0.1)
+    // delta = clock.getDelta()
+    delta = Math.min(clock.getDelta(), 0.1)
     world.step(delta)
 
     // Copy coordinates from Cannon to Three.js
@@ -198,17 +198,17 @@ function animate() {
         sphereBody.quaternion.z,
         sphereBody.quaternion.w
     )
-    // icosahedronMesh.position.set(
-    //     icosahedronBody.position.x,
-    //     icosahedronBody.position.y,
-    //     icosahedronBody.position.z
-    // )
-    // icosahedronMesh.quaternion.set(
-    //     icosahedronBody.quaternion.x,
-    //     icosahedronBody.quaternion.y,
-    //     icosahedronBody.quaternion.z,
-    //     icosahedronBody.quaternion.w
-    // )
+    icosahedronMesh.position.set(
+        icosahedronBody.position.x,
+        icosahedronBody.position.y,
+        icosahedronBody.position.z
+    )
+    icosahedronMesh.quaternion.set(
+        icosahedronBody.quaternion.x,
+        icosahedronBody.quaternion.y,
+        icosahedronBody.quaternion.z,
+        icosahedronBody.quaternion.w
+    )
     // torusKnotMesh.position.set(
     //     torusKnotBody.position.x,
     //     torusKnotBody.position.y,
