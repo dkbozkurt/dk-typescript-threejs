@@ -142,12 +142,12 @@ objLoader.load(
         ;(monkeyMesh as THREE.Mesh).material = normalMaterial
         monkeyMesh.position.x = -2
         monkeyMesh.position.y = 20
-        const monkeyShape = CannonUtils.CreateTrimesh(
-            (monkeyMesh as THREE.Mesh).geometry
-        )
-        // const monkeyShape = CannonUtils.CreateConvexPolyhedron(
+        // const monkeyShape = CannonUtils.CreateTrimesh(
         //     (monkeyMesh as THREE.Mesh).geometry
         // )
+        const monkeyShape = CannonUtils.CreateConvexPolyhedron(
+            (monkeyMesh as THREE.Mesh).geometry
+        )
         monkeyBody = new CANNON.Body({ mass: 1 })
         monkeyBody.addShape(monkeyShape)
         // monkeyBody.addShape(cubeShape)
