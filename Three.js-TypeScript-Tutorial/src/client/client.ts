@@ -1,11 +1,42 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import { GUI } from 'dat.gui'
+import * as CANNON from 'cannon-es'
 
 const scene = new THREE.Scene()
 scene.add(new THREE.AxesHelper(5))
+
+const light1 = new THREE.SpotLight(0xffffff, 100)
+light1.position.set(2.5, 5, 5)
+light1.angle = Math.PI / 4
+light1.penumbra = 0.5
+light1.castShadow = true
+light1.shadow.mapSize.width = 1024
+light1.shadow.mapSize.height = 1024
+light1.shadow.camera.near = 0.5
+light1.shadow.camera.far = 20
+scene.add(light1)
+
+const light2 = new THREE.SpotLight(0xffffff, 100)
+light2.position.set(-2.5, 5, 5)
+light2.angle = Math.PI / 4
+light2.penumbra = 0.5
+light2.castShadow = true
+light2.shadow.mapSize.width = 1024
+light2.shadow.mapSize.height = 1024
+light2.shadow.camera.near = 0.5
+light2.shadow.camera.far = 20
+scene.add(light2)
+
+scene.background = new THREE.CubeTextureLoader().load([
+    'img/px_eso0932a.jpg',
+    'img/nx_eso0932a.jpg',
+    'img/py_eso0932a.jpg',
+    'img/ny_eso0932a.jpg',
+    'img/pz_eso0932a.jpg',
+    'img/nz_eso0932a.jpg',
+])
 
 const camera = new THREE.PerspectiveCamera(
     75,
@@ -13,78 +44,65 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 )
-camera.position.set(-0.6, 0.45, 2)
+camera.position.set(0.5, 0.5, 6)
 
 const renderer = new THREE.WebGLRenderer()
-//renderer.physicallyCorrectLights = true //deprecated
-renderer.useLegacyLights = false //use this instead of setting physicallyCorrectLights=true property
-renderer.shadowMap.enabled = true
 renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.shadowMap.enabled = true
 document.body.appendChild(renderer.domElement)
 
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
+controls.target.y = 0.5
 
-const material = new THREE.MeshPhysicalMaterial({})
-material.thickness = 3.0
-material.roughness = 0.9
-material.clearcoat = 0.1
-material.clearcoatRoughness = 0
-material.transmission = 0.99
-material.ior = 1.25
-material.envMapIntensity = 25
+const world = new CANNON.World()
+world.gravity.set(0, -1, 0) // setting minimal gravity otherwise you lose friction calculations
 
-const texture = new THREE.TextureLoader().load('img/grid.png')
-material.map = texture
-const pmremGenerator = new THREE.PMREMGenerator(renderer)
-const envTexture = new THREE.CubeTextureLoader().load(
-    [
-        'img/px_50.png',
-        'img/nx_50.png',
-        'img/py_50.png',
-        'img/ny_50.png',
-        'img/pz_50.png',
-        'img/nz_50.png',
-    ],
-    () => {
-        material.envMap = pmremGenerator.fromCubemap(envTexture).texture
-        pmremGenerator.dispose()
-    }
-)
+const moonMaterial = new THREE.MeshStandardMaterial()
+let texture = new THREE.TextureLoader().load('img/moon_540x270.jpg')
+moonMaterial.map = texture
 
-let monkeyMesh: THREE.Mesh
+const sphereMeshes: THREE.Mesh[] = []
+const sphereBodies: CANNON.Body[] = []
 
-const loader = new GLTFLoader()
-loader.load(
-    'models/monkey.glb',
-    function (gltf) {
-        gltf.scene.traverse(function (child) {
-            if ((child as THREE.Mesh).isMesh) {
-                const m = child as THREE.Mesh
-                if (m.name === 'Suzanne') {
-                    m.material = material
-                    monkeyMesh = m
-                }
-                m.receiveShadow = true
-                m.castShadow = true
-            }
-            if ((child as THREE.Light).isLight) {
-                const l = child as THREE.SpotLight
-                l.castShadow = true
-                l.shadow.bias = -0.001
-                l.shadow.mapSize.width = 2048
-                l.shadow.mapSize.height = 2048
-            }
+for (let x = 0; x < 100; x++) {
+    const sphereGeometry = new THREE.SphereGeometry(0.5)
+    sphereMeshes.push(new THREE.Mesh(sphereGeometry, moonMaterial))
+    sphereMeshes[x].position.x = Math.random() * 100 - 50
+    sphereMeshes[x].position.y = Math.random() * 100 - 50
+    sphereMeshes[x].position.z = Math.random() * 100 - 50
+    sphereMeshes[x].castShadow = true
+    sphereMeshes[x].receiveShadow = true
+    scene.add(sphereMeshes[x])
+
+    const sphereShape = new CANNON.Sphere(0.5)
+    sphereBodies.push(new CANNON.Body({ mass: 1 }))
+    sphereBodies[x].addShape(sphereShape)
+    sphereBodies[x].position.x = sphereMeshes[x].position.x
+    sphereBodies[x].position.y = sphereMeshes[x].position.y
+    sphereBodies[x].position.z = sphereMeshes[x].position.z
+    world.addBody(sphereBodies[x])
+}
+
+world.addEventListener('postStep', function () {
+    // Gravity towards (0,0,0)
+    sphereBodies.forEach((s) => {
+        const v = new CANNON.Vec3()
+        v.set(-s.position.x, -s.position.y, -s.position.z).normalize()
+        v.scale(9.8, s.force)
+        s.applyLocalForce(v)
+        s.force.y += s.mass //cancel out world gravity
+    })
+})
+
+const button = {
+    explode: function () {
+        sphereBodies.forEach((s) => {
+            s.force.set(s.position.x, s.position.y, s.position.z).normalize()
+            s.velocity = s.force.scale(Math.random() * 50)
         })
-        scene.add(gltf.scene)
     },
-    (xhr) => {
-        console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
-    },
-    (error) => {
-        console.log(error)
-    }
-)
+}
 
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
@@ -94,71 +112,32 @@ function onWindowResize() {
     render()
 }
 
-const options = {
-    side: {
-        FrontSide: THREE.FrontSide,
-        BackSide: THREE.BackSide,
-        DoubleSide: THREE.DoubleSide,
-    },
-}
-const gui = new GUI()
-const materialFolder = gui.addFolder('THREE.Material')
-materialFolder.add(material, 'transparent')
-materialFolder.add(material, 'opacity', 0, 1, 0.01)
-materialFolder.add(material, 'depthTest')
-materialFolder.add(material, 'depthWrite')
-materialFolder
-    .add(material, 'alphaTest', 0, 1, 0.01)
-    .onChange(() => updateMaterial())
-materialFolder.add(material, 'visible')
-materialFolder
-    .add(material, 'side', options.side)
-    .onChange(() => updateMaterial())
-//materialFolder.open()
-
-const data = {
-    color: material.color.getHex(),
-    emissive: material.emissive.getHex(),
-}
-
-const meshPhysicalMaterialFolder = gui.addFolder('THREE.MeshPhysicalMaterial')
-
-meshPhysicalMaterialFolder.addColor(data, 'color').onChange(() => {
-    material.color.setHex(Number(data.color.toString().replace('#', '0x')))
-})
-meshPhysicalMaterialFolder.addColor(data, 'emissive').onChange(() => {
-    material.emissive.setHex(
-        Number(data.emissive.toString().replace('#', '0x'))
-    )
-})
-
-meshPhysicalMaterialFolder.add(material, 'wireframe')
-meshPhysicalMaterialFolder
-    .add(material, 'flatShading')
-    .onChange(() => updateMaterial())
-meshPhysicalMaterialFolder.add(material, 'roughness', 0, 1)
-meshPhysicalMaterialFolder.add(material, 'metalness', 0, 1)
-meshPhysicalMaterialFolder.add(material, 'clearcoat', 0, 1, 0.01)
-meshPhysicalMaterialFolder.add(material, 'clearcoatRoughness', 0, 1, 0.01)
-meshPhysicalMaterialFolder.add(material, 'transmission', 0, 1, 0.01)
-meshPhysicalMaterialFolder.add(material, 'ior', 1.0, 2.333)
-meshPhysicalMaterialFolder.add(material, 'thickness', 0, 10.0)
-meshPhysicalMaterialFolder.open()
-
-function updateMaterial() {
-    material.side = Number(material.side) as THREE.Side
-    material.needsUpdate = true
-}
-
 const stats = new Stats()
 document.body.appendChild(stats.dom)
+
+const gui = new GUI()
+gui.add(button, 'explode')
+
+const clock = new THREE.Clock()
+let delta
 
 function animate() {
     requestAnimationFrame(animate)
 
     controls.update()
 
-    monkeyMesh.rotation.y += 0.01
+    delta = Math.min(clock.getDelta(), 0.1)
+    world.step(delta)
+
+    sphereBodies.forEach((s, i) => {
+        sphereMeshes[i].position.set(s.position.x, s.position.y, s.position.z)
+        sphereMeshes[i].quaternion.set(
+            s.quaternion.x,
+            s.quaternion.y,
+            s.quaternion.z,
+            s.quaternion.w
+        )
+    })
 
     render()
 
