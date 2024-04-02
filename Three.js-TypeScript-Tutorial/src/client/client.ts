@@ -1,10 +1,11 @@
 import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import Stats from 'three/examples/jsm/libs/stats.module'
+import { GUI } from 'dat.gui'
 
 const scene = new THREE.Scene()
-
-const gridHelper = new THREE.GridHelper(10, 10, 0xaec6cf, 0xaec6cf)
-scene.add(gridHelper)
+scene.add(new THREE.AxesHelper(5))
 
 const camera = new THREE.PerspectiveCamera(
     75,
@@ -12,20 +13,78 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 )
+camera.position.set(-0.6, 0.45, 2)
 
 const renderer = new THREE.WebGLRenderer()
+//renderer.physicallyCorrectLights = true //deprecated
+renderer.useLegacyLights = false //use this instead of setting physicallyCorrectLights=true property
+renderer.shadowMap.enabled = true
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-const geometry = new THREE.BoxGeometry()
-const material = new THREE.MeshBasicMaterial({
-    color: 0x00ff00,
-    wireframe: true,
-})
+const controls = new OrbitControls(camera, renderer.domElement)
+controls.enableDamping = true
 
-const cube = new THREE.Mesh(geometry, material)
-cube.position.set(0, 0.5, -10)
-scene.add(cube)
+const material = new THREE.MeshPhysicalMaterial({})
+material.thickness = 3.0
+material.roughness = 0.9
+material.clearcoat = 0.1
+material.clearcoatRoughness = 0
+material.transmission = 0.99
+material.ior = 1.25
+material.envMapIntensity = 25
+
+const texture = new THREE.TextureLoader().load('img/grid.png')
+material.map = texture
+const pmremGenerator = new THREE.PMREMGenerator(renderer)
+const envTexture = new THREE.CubeTextureLoader().load(
+    [
+        'img/px_50.png',
+        'img/nx_50.png',
+        'img/py_50.png',
+        'img/ny_50.png',
+        'img/pz_50.png',
+        'img/nz_50.png',
+    ],
+    () => {
+        material.envMap = pmremGenerator.fromCubemap(envTexture).texture
+        pmremGenerator.dispose()
+    }
+)
+
+let monkeyMesh: THREE.Mesh
+
+const loader = new GLTFLoader()
+loader.load(
+    'models/monkey.glb',
+    function (gltf) {
+        gltf.scene.traverse(function (child) {
+            if ((child as THREE.Mesh).isMesh) {
+                const m = child as THREE.Mesh
+                if (m.name === 'Suzanne') {
+                    m.material = material
+                    monkeyMesh = m
+                }
+                m.receiveShadow = true
+                m.castShadow = true
+            }
+            if ((child as THREE.Light).isLight) {
+                const l = child as THREE.SpotLight
+                l.castShadow = true
+                l.shadow.bias = -0.001
+                l.shadow.mapSize.width = 2048
+                l.shadow.mapSize.height = 2048
+            }
+        })
+        scene.add(gltf.scene)
+    },
+    (xhr) => {
+        console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+    },
+    (error) => {
+        console.log(error)
+    }
+)
 
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
@@ -35,106 +94,60 @@ function onWindowResize() {
     render()
 }
 
-/* Liner Interpolation
- * lerp(min, max, ratio)
- * eg,
- * lerp(20, 60, .5)) = 40
- * lerp(-20, 60, .5)) = 20
- * lerp(20, 60, .75)) = 50
- * lerp(-20, -10, .1)) = -.19
- */
-function lerp(x: number, y: number, a: number): number {
-    return (1 - a) * x + a * y
+const options = {
+    side: {
+        FrontSide: THREE.FrontSide,
+        BackSide: THREE.BackSide,
+        DoubleSide: THREE.DoubleSide,
+    },
+}
+const gui = new GUI()
+const materialFolder = gui.addFolder('THREE.Material')
+materialFolder.add(material, 'transparent')
+materialFolder.add(material, 'opacity', 0, 1, 0.01)
+materialFolder.add(material, 'depthTest')
+materialFolder.add(material, 'depthWrite')
+materialFolder
+    .add(material, 'alphaTest', 0, 1, 0.01)
+    .onChange(() => updateMaterial())
+materialFolder.add(material, 'visible')
+materialFolder
+    .add(material, 'side', options.side)
+    .onChange(() => updateMaterial())
+//materialFolder.open()
+
+const data = {
+    color: material.color.getHex(),
+    emissive: material.emissive.getHex(),
 }
 
-// Used to fit the lerps to start and end at specific scrolling percentages
-function scalePercent(start: number, end: number) {
-    return (scrollPercent - start) / (end - start)
-}
+const meshPhysicalMaterialFolder = gui.addFolder('THREE.MeshPhysicalMaterial')
 
-const animationScripts: { start: number; end: number; func: () => void }[] = []
-
-//add an animation that flashes the cube through 100 percent of scroll
-animationScripts.push({
-    start: 0,
-    end: 101,
-    func: () => {
-        let g = material.color.g
-        g -= 0.05
-        if (g <= 0) {
-            g = 1.0
-        }
-        material.color.g = g
-    },
+meshPhysicalMaterialFolder.addColor(data, 'color').onChange(() => {
+    material.color.setHex(Number(data.color.toString().replace('#', '0x')))
+})
+meshPhysicalMaterialFolder.addColor(data, 'emissive').onChange(() => {
+    material.emissive.setHex(
+        Number(data.emissive.toString().replace('#', '0x'))
+    )
 })
 
-//add an animation that moves the cube through first 40 percent of scroll
-animationScripts.push({
-    start: 0,
-    end: 40,
-    func: () => {
-        camera.lookAt(cube.position)
-        camera.position.set(0, 1, 2)
-        cube.position.z = lerp(-10, 0, scalePercent(0, 40))
-        //console.log(cube.position.z)
-    },
-})
+meshPhysicalMaterialFolder.add(material, 'wireframe')
+meshPhysicalMaterialFolder
+    .add(material, 'flatShading')
+    .onChange(() => updateMaterial())
+meshPhysicalMaterialFolder.add(material, 'roughness', 0, 1)
+meshPhysicalMaterialFolder.add(material, 'metalness', 0, 1)
+meshPhysicalMaterialFolder.add(material, 'clearcoat', 0, 1, 0.01)
+meshPhysicalMaterialFolder.add(material, 'clearcoatRoughness', 0, 1, 0.01)
+meshPhysicalMaterialFolder.add(material, 'transmission', 0, 1, 0.01)
+meshPhysicalMaterialFolder.add(material, 'ior', 1.0, 2.333)
+meshPhysicalMaterialFolder.add(material, 'thickness', 0, 10.0)
+meshPhysicalMaterialFolder.open()
 
-//add an animation that rotates the cube between 40-60 percent of scroll
-animationScripts.push({
-    start: 40,
-    end: 60,
-    func: () => {
-        camera.lookAt(cube.position)
-        camera.position.set(0, 1, 2)
-        cube.rotation.z = lerp(0, Math.PI, scalePercent(40, 60))
-        //console.log(cube.rotation.z)
-    },
-})
-
-//add an animation that moves the camera between 60-80 percent of scroll
-animationScripts.push({
-    start: 60,
-    end: 80,
-    func: () => {
-        camera.position.x = lerp(0, 5, scalePercent(60, 80))
-        camera.position.y = lerp(1, 5, scalePercent(60, 80))
-        camera.lookAt(cube.position)
-        //console.log(camera.position.x + " " + camera.position.y)
-    },
-})
-
-//add an animation that auto rotates the cube from 80 percent of scroll
-animationScripts.push({
-    start: 80,
-    end: 101,
-    func: () => {
-        //auto rotate
-        cube.rotation.x += 0.01
-        cube.rotation.y += 0.01
-    },
-})
-
-function playScrollAnimations() {
-    animationScripts.forEach((a) => {
-        if (scrollPercent >= a.start && scrollPercent < a.end) {
-            a.func()
-        }
-    })
-}
-
-let scrollPercent = 0
-
-document.body.onscroll = () => {
-    //calculate the current scroll progress as a percentage
-    scrollPercent =
-        ((document.documentElement.scrollTop || document.body.scrollTop) /
-            ((document.documentElement.scrollHeight ||
-                document.body.scrollHeight) -
-                document.documentElement.clientHeight)) *
-        100
-    ;(document.getElementById('scrollProgress') as HTMLDivElement).innerText =
-        'Scroll Progress : ' + scrollPercent.toFixed(2)
+function updateMaterial() {
+    material.side = Number(material.side) as THREE.Side
+    material.needsUpdate = true
 }
 
 const stats = new Stats()
@@ -143,7 +156,9 @@ document.body.appendChild(stats.dom)
 function animate() {
     requestAnimationFrame(animate)
 
-    playScrollAnimations()
+    controls.update()
+
+    monkeyMesh.rotation.y += 0.01
 
     render()
 
@@ -154,5 +169,4 @@ function render() {
     renderer.render(scene, camera)
 }
 
-window.scrollTo({ top: 0, behavior: 'smooth' })
 animate()
