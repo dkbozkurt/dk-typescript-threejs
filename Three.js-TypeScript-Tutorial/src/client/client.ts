@@ -2,41 +2,27 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import { GUI } from 'dat.gui'
-import * as CANNON from 'cannon-es'
 
 const scene = new THREE.Scene()
-scene.add(new THREE.AxesHelper(5))
 
-const light1 = new THREE.SpotLight(0xffffff, 100)
-light1.position.set(2.5, 5, 5)
-light1.angle = Math.PI / 4
-light1.penumbra = 0.5
-light1.castShadow = true
-light1.shadow.mapSize.width = 1024
-light1.shadow.mapSize.height = 1024
-light1.shadow.camera.near = 0.5
-light1.shadow.camera.far = 20
-scene.add(light1)
+const light = new THREE.DirectionalLight(0xffffff, 5)
+light.position.set(10, 5, 2)
+light.castShadow = true
+light.shadow.mapSize.width = 256
+light.shadow.mapSize.height = 256
+light.shadow.camera.near = 0.5
+light.shadow.camera.far = 25
+light.shadow.camera.left = -10
+light.shadow.camera.right = 10
+light.shadow.camera.top = 10
+light.shadow.camera.bottom = -10
+light.shadow.radius = 5
+light.shadow.blurSamples = 25
 
-const light2 = new THREE.SpotLight(0xffffff, 100)
-light2.position.set(-2.5, 5, 5)
-light2.angle = Math.PI / 4
-light2.penumbra = 0.5
-light2.castShadow = true
-light2.shadow.mapSize.width = 1024
-light2.shadow.mapSize.height = 1024
-light2.shadow.camera.near = 0.5
-light2.shadow.camera.far = 20
-scene.add(light2)
+scene.add(light)
 
-scene.background = new THREE.CubeTextureLoader().load([
-    'img/px_eso0932a.jpg',
-    'img/nx_eso0932a.jpg',
-    'img/py_eso0932a.jpg',
-    'img/ny_eso0932a.jpg',
-    'img/pz_eso0932a.jpg',
-    'img/nz_eso0932a.jpg',
-])
+const helper = new THREE.CameraHelper(light.shadow.camera)
+scene.add(helper)
 
 const camera = new THREE.PerspectiveCamera(
     75,
@@ -44,65 +30,81 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 )
-camera.position.set(0.5, 0.5, 6)
+camera.position.set(9, 0.75, 3)
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.shadowMap.enabled = true
+renderer.shadowMap.type = THREE.VSMShadowMap
+//renderer.shadowMap.type = THREE.PCFShadowMap
+//renderer.shadowMap.type = THREE.PCFSoftShadowMap
 document.body.appendChild(renderer.domElement)
 
-const controls = new OrbitControls(camera, renderer.domElement)
-controls.enableDamping = true
-controls.target.y = 0.5
+new OrbitControls(camera, renderer.domElement)
 
-const world = new CANNON.World()
-world.gravity.set(0, -1, 0) // setting minimal gravity otherwise you lose friction calculations
+const planeGeometry = new THREE.PlaneGeometry(100, 20)
+const plane = new THREE.Mesh(planeGeometry, new THREE.MeshPhongMaterial())
+plane.rotateX(-Math.PI / 2)
+plane.position.y = -1.75
+plane.receiveShadow = true
+scene.add(plane)
 
-const moonMaterial = new THREE.MeshStandardMaterial()
-let texture = new THREE.TextureLoader().load('img/moon_540x270.jpg')
-moonMaterial.map = texture
+const torusGeometry = [
+    new THREE.TorusGeometry(),
+    new THREE.TorusGeometry(),
+    new THREE.TorusGeometry(),
+    new THREE.TorusGeometry(),
+    new THREE.TorusGeometry(),
+]
 
-const sphereMeshes: THREE.Mesh[] = []
-const sphereBodies: CANNON.Body[] = []
+const material = [
+    new THREE.MeshBasicMaterial(),
+    new THREE.MeshLambertMaterial(),
+    new THREE.MeshPhongMaterial(),
+    new THREE.MeshPhysicalMaterial({}),
+    new THREE.MeshToonMaterial(),
+]
 
-for (let x = 0; x < 100; x++) {
-    const sphereGeometry = new THREE.SphereGeometry(0.5)
-    sphereMeshes.push(new THREE.Mesh(sphereGeometry, moonMaterial))
-    sphereMeshes[x].position.x = Math.random() * 100 - 50
-    sphereMeshes[x].position.y = Math.random() * 100 - 50
-    sphereMeshes[x].position.z = Math.random() * 100 - 50
-    sphereMeshes[x].castShadow = true
-    sphereMeshes[x].receiveShadow = true
-    scene.add(sphereMeshes[x])
+const torus = [
+    new THREE.Mesh(torusGeometry[0], material[0]),
+    new THREE.Mesh(torusGeometry[1], material[1]),
+    new THREE.Mesh(torusGeometry[2], material[2]),
+    new THREE.Mesh(torusGeometry[3], material[3]),
+    new THREE.Mesh(torusGeometry[4], material[4]),
+]
 
-    const sphereShape = new CANNON.Sphere(0.5)
-    sphereBodies.push(new CANNON.Body({ mass: 1 }))
-    sphereBodies[x].addShape(sphereShape)
-    sphereBodies[x].position.x = sphereMeshes[x].position.x
-    sphereBodies[x].position.y = sphereMeshes[x].position.y
-    sphereBodies[x].position.z = sphereMeshes[x].position.z
-    world.addBody(sphereBodies[x])
-}
+const texture = new THREE.TextureLoader().load('img/grid.png')
+material[0].map = texture
+material[1].map = texture
+material[2].map = texture
+material[3].map = texture
+material[4].map = texture
 
-world.addEventListener('postStep', function () {
-    // Gravity towards (0,0,0)
-    sphereBodies.forEach((s) => {
-        const v = new CANNON.Vec3()
-        v.set(-s.position.x, -s.position.y, -s.position.z).normalize()
-        v.scale(9.8, s.force)
-        s.applyLocalForce(v)
-        s.force.y += s.mass //cancel out world gravity
-    })
-})
+torus[0].position.x = -8
+torus[1].position.x = -4
+torus[2].position.x = 0
+torus[3].position.x = 4
+torus[4].position.x = 8
 
-const button = {
-    explode: function () {
-        sphereBodies.forEach((s) => {
-            s.force.set(s.position.x, s.position.y, s.position.z).normalize()
-            s.velocity = s.force.scale(Math.random() * 50)
-        })
-    },
-}
+torus[0].castShadow = true
+torus[1].castShadow = true
+torus[2].castShadow = true
+torus[3].castShadow = true
+torus[4].castShadow = true
+
+torus[0].receiveShadow = true
+torus[1].receiveShadow = true
+torus[2].receiveShadow = true
+torus[3].receiveShadow = true
+torus[4].receiveShadow = true
+
+scene.add(torus[0])
+scene.add(torus[1])
+scene.add(torus[2])
+scene.add(torus[3])
+scene.add(torus[4])
+
+camera.lookAt(torus[3].position)
 
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
@@ -115,28 +117,32 @@ function onWindowResize() {
 const stats = new Stats()
 document.body.appendChild(stats.dom)
 
-const gui = new GUI()
-gui.add(button, 'explode')
+const data = {
+    color: light.color.getHex(),
+    mapsEnabled: true,
+    shadowMapSizeWidth: 512,
+    shadowMapSizeHeight: 512,
+}
 
-const clock = new THREE.Clock()
-let delta
+const gui = new GUI()
+const lightFolder = gui.addFolder('THREE.Light')
+lightFolder.addColor(data, 'color').onChange(() => {
+    light.color.setHex(Number(data.color.toString().replace('#', '0x')))
+})
+lightFolder.add(light, 'intensity', 0, 10, 0.01)
+
+const directionalLightFolder = gui.addFolder('THREE.DirectionalLight')
+directionalLightFolder.add(light.shadow, 'radius', 0, 25, 1)
+directionalLightFolder.add(light.shadow, 'blurSamples', 1, 25, 1)
+directionalLightFolder.open()
 
 function animate() {
     requestAnimationFrame(animate)
 
-    controls.update()
+    helper.update()
 
-    delta = Math.min(clock.getDelta(), 0.1)
-    world.step(delta)
-
-    sphereBodies.forEach((s, i) => {
-        sphereMeshes[i].position.set(s.position.x, s.position.y, s.position.z)
-        sphereMeshes[i].quaternion.set(
-            s.quaternion.x,
-            s.quaternion.y,
-            s.quaternion.z,
-            s.quaternion.w
-        )
+    torus.forEach((t) => {
+        t.rotation.y += 0.01
     })
 
     render()
