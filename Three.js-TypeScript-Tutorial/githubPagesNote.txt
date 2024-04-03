@@ -1,0 +1,6 @@
+How to do source video link: https://www.udemy.com/course/threejs-tutorials/learn/lecture/27876294#notes
+How to do source text link: https://sbcode.net/threejs/github-pages/
+
+Repo: https://github.com/dkbozkurt/TS-TJS-test-hosting
+Link: https://dkbozkurt.github.io/TS-TJS-test-hosting/
+
