@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config ./src/client/webpack.prod.js",
     "start": "node ./dist/server/server.js",
-    "dev": "webpack serve --config ./src/client/webpack.dev.js",
+    "dev": "concurrently -k \"tsc -p ./src/server -w\" \"nodemon ./dist/server/server.js\" \"webpack serve --config ./src/client/webpack.dev.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -17,7 +17,9 @@
     "@types/node": "^20.12.4",
     "@types/three": "^0.161.2",
     "cannon-es": "^0.20.0",
+    "concurrently": "^8.2.2",
     "dat.gui": "^0.7.9",
+    "nodemon": "^3.1.0",
     "three": "^0.161.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",
@@ -27,6 +29,8 @@
   },
   "dependencies": {
     "@tweenjs/tween.js": "^23.1.1",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5"
   }
 }
